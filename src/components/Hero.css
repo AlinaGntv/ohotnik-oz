@@ -50,7 +50,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-top: 140px;
+  padding-top: calc(140px + env(safe-area-inset-top));
   padding-bottom: 60px;
 }
 
@@ -199,7 +199,7 @@
 
 @media (max-width: 640px) {
   .hero__content {
-    padding-top: 120px;
+    padding-top: calc(120px + env(safe-area-inset-top));
   }
 
   .hero__buttons .btn {

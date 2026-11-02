@@ -38,6 +38,8 @@
 }
 
 html {
+  /* тёмный фон под «оттягиванием» страницы на iPhone — в тон шапке и подвалу */
+  background: var(--c-dark);
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
 }
@@ -112,6 +114,9 @@ ul {
   max-width: calc(var(--container) + var(--gutter) * 2);
   margin: 0 auto;
   padding: 0 var(--gutter);
+  /* телефон боком: не залезаем под вырез камеры */
+  padding-left: max(var(--gutter), env(safe-area-inset-left));
+  padding-right: max(var(--gutter), env(safe-area-inset-right));
 }
 
 .section {
