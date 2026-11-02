@@ -13,14 +13,14 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     env:
       # секреты нельзя проверять в if напрямую, поэтому прокидываем через env
       FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -33,14 +33,16 @@ jobs:
       # иначе веб-сервер Jino отдаёт 403 на assets/ и images/
       - name: Upload to Jino
         if: env.FTP_PASSWORD != ''
-        timeout-minutes: 5
+        timeout-minutes: 10
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_SERVER_DIR: ${{ secrets.FTP_SERVER_DIR }}
         run: |
-          sudo apt-get install -y -qq lftp > /dev/null
-          lftp -u "$FTP_USERNAME,$FTP_PASSWORD" -p 21 "$FTP_SERVER" <<EOF
+          sudo apt-get update -qq > /dev/null && sudo apt-get install -y -qq lftp > /dev/null
+
+          upload() {
+            lftp -u "$FTP_USERNAME,$FTP_PASSWORD" -p 21 "$FTP_SERVER" <<EOF
           set cmd:fail-exit yes
           set ftp:ssl-force true
           set ftp:ssl-protect-data true
@@ -54,6 +56,19 @@ jobs:
           chmod 755 assets images
           bye
           EOF
+          }
+
+          # FTP между GitHub и Jino иногда обрывается — пробуем до трёх раз
+          for attempt in 1 2 3; do
+            if upload; then
+              echo "Загружено с попытки $attempt"
+              exit 0
+            fi
+            echo "::warning::Попытка $attempt не удалась, повтор через 15 секунд"
+            sleep 15
+          done
+          echo "::error::Не удалось загрузить сайт на Jino за три попытки"
+          exit 1
 
       - name: Skip upload
         if: env.FTP_PASSWORD == ''
