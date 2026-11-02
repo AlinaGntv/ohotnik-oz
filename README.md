@@ -33,7 +33,7 @@ npm run dev
 | `FTP_SERVER` | `c825fa2a9b46.hosting.myjino.ru` |
 | `FTP_USERNAME` | логин FTP-аккаунта |
 | `FTP_PASSWORD` | пароль FTP-аккаунта |
-| `FTP_SERVER_DIR` | папка сайта на сервере, со слешем в конце, например `/domains/ohotnik-oz.ru/` |
+| `FTP_SERVER_DIR` | папка сайта на сервере, со слешем в конце, для технического адреса Jino — `/domains/c825fa2a9b46.hosting.myjino.ru/` |
 
 Пока секреты не заданы, сборка проходит, а шаг загрузки пропускается.
 
