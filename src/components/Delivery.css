@@ -1,0 +1,166 @@
+.delivery {
+  background: var(--c-cream-2);
+}
+
+.delivery__inner {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.85fr) 1.6fr;
+  gap: clamp(40px, 5vw, 80px);
+  align-items: center;
+}
+
+.delivery__lead {
+  margin: 24px 0 40px;
+  max-width: 420px;
+}
+
+.delivery__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.delivery__card {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(24px, 2.6vw, 36px);
+  border-radius: var(--radius);
+  background: var(--c-card);
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.6s var(--ease), translate 0.6s var(--ease);
+}
+
+.delivery__card:hover {
+  translate: 0 -6px;
+  box-shadow: var(--shadow-hover);
+}
+
+.delivery__icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 28px;
+  border: 1px solid var(--c-line-light);
+  border-radius: 50%;
+  color: var(--c-gold-dark);
+}
+
+.delivery__icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.delivery__label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+}
+
+.delivery__value {
+  margin-top: 8px;
+  font-family: var(--font-serif);
+  font-size: clamp(24px, 2.2vw, 32px);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.delivery__value--big {
+  font-size: clamp(46px, 4.4vw, 64px);
+  line-height: 1;
+}
+
+.delivery__note {
+  margin-top: auto;
+  padding-top: 16px;
+  font-size: 14px;
+  color: var(--c-text-muted);
+}
+
+.delivery__schedule {
+  margin-top: 12px;
+}
+
+.delivery__schedule li {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+}
+
+.delivery__schedule li + li {
+  border-top: 1px solid var(--c-line-light);
+}
+
+.delivery__schedule span {
+  font-size: 13px;
+  color: var(--c-text-muted);
+}
+
+.delivery__schedule strong {
+  font-family: var(--font-serif);
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* акционная карточка — тёмная с золотом */
+.delivery__card--promo {
+  position: relative;
+  overflow: hidden;
+  background: var(--c-dark);
+  color: var(--c-light);
+}
+
+.delivery__card--promo::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -40%;
+  width: 90%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201, 154, 82, 0.35), transparent 70%);
+  animation: promo-glow 6s ease-in-out infinite alternate;
+}
+
+@keyframes promo-glow {
+  to {
+    transform: translate(-20%, 25%);
+  }
+}
+
+.delivery__card--promo > * {
+  position: relative;
+}
+
+.delivery__card--promo .delivery__icon {
+  border-color: var(--c-line-dark);
+  color: var(--c-gold);
+}
+
+.delivery__card--promo .delivery__label,
+.delivery__card--promo .delivery__note {
+  color: var(--c-light-muted);
+}
+
+.delivery__card--promo .delivery__value {
+  color: var(--c-gold-light);
+}
+
+@media (max-width: 1100px) {
+  .delivery__inner {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .delivery__cards {
+    grid-template-columns: 1fr;
+  }
+
+  .delivery__icon {
+    margin-bottom: 20px;
+  }
+}

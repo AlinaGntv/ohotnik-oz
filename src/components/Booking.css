@@ -1,0 +1,240 @@
+.booking {
+  position: relative;
+  overflow: hidden;
+}
+
+.booking__bg {
+  position: absolute;
+  inset: -15% 0;
+  will-change: transform;
+}
+
+.booking__overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(12, 14, 11, 0.9) 0%, rgba(12, 14, 11, 0.75) 45%, rgba(12, 14, 11, 0.6) 100%);
+}
+
+.booking__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: clamp(40px, 6vw, 96px);
+  align-items: center;
+}
+
+.booking__text {
+  margin-top: 24px;
+  max-width: 440px;
+}
+
+.booking__phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 40px;
+  font-size: 22px;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.booking__phone:hover {
+  color: var(--c-gold-light);
+}
+
+.booking__phone svg {
+  width: 52px;
+  height: 52px;
+  padding: 14px;
+  border: 1px solid var(--c-line-dark);
+  border-radius: 50%;
+  color: var(--c-gold);
+}
+
+.booking__phone small {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--c-light-muted);
+}
+
+.booking__panel {
+  padding: clamp(28px, 4vw, 48px);
+  border: 1px solid rgba(243, 234, 217, 0.12);
+  border-radius: calc(var(--radius) + 4px);
+  background: rgba(20, 26, 22, 0.7);
+  backdrop-filter: blur(14px);
+}
+
+.booking__form {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-areas:
+    'name name name'
+    'phone phone phone'
+    'date time guests'
+    'submit submit submit'
+    'note note note';
+  gap: 20px;
+}
+
+.field--name { grid-area: name; }
+.field--phone { grid-area: phone; }
+.field--date { grid-area: date; }
+.field--time { grid-area: time; }
+.field--guests { grid-area: guests; }
+.booking__submit { grid-area: submit; }
+.booking__note { grid-area: note; }
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--c-light-muted);
+}
+
+.field input,
+.field__control {
+  height: 52px;
+  border: 1px solid rgba(243, 234, 217, 0.16);
+  border-radius: var(--radius-sm);
+  background: rgba(243, 234, 217, 0.05);
+  color: var(--c-light);
+  font-size: 15px;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.field input {
+  width: 100%;
+  padding: 0 16px;
+  outline: none;
+  color-scheme: dark;
+}
+
+.field input::placeholder {
+  color: rgba(243, 234, 217, 0.35);
+}
+
+.field input:hover,
+.field__control:hover {
+  border-color: rgba(243, 234, 217, 0.32);
+}
+
+.field input:focus,
+.field__control:focus-within {
+  border-color: var(--c-gold);
+  background: rgba(243, 234, 217, 0.08);
+}
+
+.field__control {
+  display: flex;
+  align-items: center;
+  padding-left: 14px;
+}
+
+.field__control svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  color: var(--c-gold);
+}
+
+.field__control input {
+  height: 100%;
+  min-width: 0;
+  padding: 0 10px;
+  border: 0;
+  background: transparent !important;
+}
+
+.guests {
+  justify-content: space-between;
+  padding: 0;
+}
+
+.guests output {
+  font-weight: 600;
+}
+
+.guests button {
+  width: 44px;
+  height: 100%;
+  font-size: 18px;
+  color: var(--c-light-muted);
+  transition: color 0.3s;
+}
+
+.guests button:hover {
+  color: var(--c-gold-light);
+}
+
+.booking__submit {
+  height: 56px;
+  margin-top: 8px;
+}
+
+.booking__note {
+  font-size: 12px;
+  text-align: center;
+  color: rgba(243, 234, 217, 0.45);
+}
+
+.booking__note a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.booking__success {
+  padding: 40px 0;
+  text-align: center;
+}
+
+.booking__success-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 24px;
+  border: 1px solid var(--c-gold);
+  border-radius: 50%;
+  font-size: 28px;
+  color: var(--c-gold);
+  animation: badge-pop 0.6s var(--ease);
+}
+
+.booking__success h3 {
+  font-size: 30px;
+}
+
+.booking__success p {
+  margin: 14px auto 28px;
+  max-width: 340px;
+  color: var(--c-light-muted);
+}
+
+@media (max-width: 960px) {
+  .booking__inner {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .booking__form {
+    grid-template-columns: 1fr;
+    grid-template-areas: 'name' 'phone' 'date' 'time' 'guests' 'submit' 'note';
+    gap: 16px;
+  }
+
+  .booking__panel {
+    padding: 24px 20px;
+  }
+
+  .booking__phone {
+    font-size: 18px;
+  }
+}

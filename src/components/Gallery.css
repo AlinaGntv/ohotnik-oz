@@ -1,0 +1,43 @@
+.gallery {
+  background: var(--c-cream-2);
+  overflow: hidden;
+}
+
+/* лента выходит за правый край контейнера */
+.gallery__track {
+  gap: 20px;
+  padding-left: max(var(--gutter), calc((100vw - var(--container)) / 2));
+  padding-right: var(--gutter);
+  scroll-padding-left: max(var(--gutter), calc((100vw - var(--container)) / 2));
+}
+
+.gallery__item {
+  width: clamp(260px, 26vw, 380px);
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+
+/* чередуем пропорции для живого ритма */
+.gallery__item:nth-child(even) {
+  aspect-ratio: 4 / 4.2;
+  align-self: flex-end;
+}
+
+.gallery__item img {
+  transition: transform 1.4s var(--ease);
+}
+
+.gallery__item:hover img {
+  transform: scale(1.06);
+}
+
+@media (max-width: 640px) {
+  .gallery__item {
+    width: 72vw;
+  }
+
+  .gallery .slider-arrows {
+    display: none;
+  }
+}
