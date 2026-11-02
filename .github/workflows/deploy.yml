@@ -5,13 +5,15 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# новый push отменяет предыдущий деплой, чтобы зависший запуск не держал очередь
 concurrency:
   group: deploy
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       # секреты нельзя проверять в if напрямую, поэтому прокидываем через env
       FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
@@ -27,11 +29,11 @@ jobs:
       - run: npm run lint
       - run: npm run build
 
-      # lftp, а не готовый FTP-экшен: Jino создаёт папки без прав на чтение
-      # для веб-сервера (403 на assets/ и images/), поэтому после загрузки
-      # явно выставляем им 755
+      # lftp вместо готового FTP-экшена: после загрузки явно выставляем папкам 755,
+      # иначе веб-сервер Jino отдаёт 403 на assets/ и images/
       - name: Upload to Jino
         if: env.FTP_PASSWORD != ''
+        timeout-minutes: 5
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
@@ -39,9 +41,15 @@ jobs:
         run: |
           sudo apt-get install -y -qq lftp > /dev/null
           lftp -u "$FTP_USERNAME,$FTP_PASSWORD" -p 21 "$FTP_SERVER" <<EOF
+          set cmd:fail-exit yes
           set ftp:ssl-force true
-          set net:max-retries 2
-          mirror -R --verbose --parallel=4 dist/ "$FTP_SERVER_DIR"
+          set ftp:ssl-protect-data true
+          set ftp:passive-mode true
+          set net:timeout 20
+          set net:max-retries 3
+          set net:reconnect-interval-base 5
+          set net:reconnect-interval-max 15
+          mirror -R --verbose --parallel=2 dist/ "$FTP_SERVER_DIR"
           cd "$FTP_SERVER_DIR"
           chmod 755 assets images
           bye
