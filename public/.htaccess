@@ -1,3 +1,17 @@
+# Один адрес сайта: https://ohotnik-oz.ru (без www).
+# Проверяем и HTTPS, и X-Forwarded-Proto — на случай, если SSL снимается на прокси Jino.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  RewriteCond %{HTTP_HOST} ^www\.ohotnik-oz\.ru$ [NC]
+  RewriteRule ^ https://ohotnik-oz.ru%{REQUEST_URI} [L,R=301]
+
+  RewriteCond %{HTTP_HOST} ^ohotnik-oz\.ru$ [NC]
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://ohotnik-oz.ru%{REQUEST_URI} [L,R=301]
+</IfModule>
+
 # Сжатие текстовых файлов
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/css application/javascript image/svg+xml application/json
