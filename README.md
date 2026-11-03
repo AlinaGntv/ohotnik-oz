@@ -28,14 +28,21 @@ npm run dev
 
 ## Деплой
 
-При каждом push в ветку `main` GitHub Actions собирает сайт, публикует сборку в ветку `build` и отправляет короткий подписанный манифест (пути и sha256 файлов) в `public/api/deploy.php`. Сайт сам скачивает изменившиеся файлы с GitHub и проверяет их по контрольной сумме (`.github/workflows/deploy.yml`). Так сделано потому, что крупные передачи из GitHub в Jino зависают (FTP, SFTP и HTTPS-загрузка), а в обратную сторону всё работает.
+1. Пушим изменения в `main`. GitHub Actions проверяет код, собирает сайт и кладёт готовую сборку в ветку `build` (`.github/workflows/build.yml`, около минуты).
+2. В панели Jino → контейнер → **Консоль** выполняем:
 
-Нужен один секрет репозитория (Settings → Secrets and variables → Actions):
+   ```bash
+   ~/update-site.sh
+   ```
 
-| Секрет | Значение |
-|---|---|
-| `DEPLOY_TOKEN` | тот же ключ, что `deploy_token` в `~/ohotnik-config.php` на сервере |
+   Скрипт забирает ветку `build` и копирует её в `~/domains/ohotnik-oz.ru` ([tools/update-site.sh](tools/update-site.sh)).
 
-Пока секрет не задан, сборка проходит, а шаг загрузки пропускается. Без `deploy_token` в конфиге `deploy.php` отвечает 404.
+Установка скрипта на сервер (один раз):
+
+```bash
+curl -fsSo ~/update-site.sh https://raw.githubusercontent.com/AlinaGntv/ohotnik-oz/main/tools/update-site.sh && chmod +x ~/update-site.sh
+```
+
+Автоматическая загрузка из GitHub в Jino не используется: крупные передачи данных между ними обрываются (проверены FTP, SFTP и HTTPS).
 
 Ручная сборка: `npm run build`, готовые файлы окажутся в `dist`.

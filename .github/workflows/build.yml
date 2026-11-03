@@ -1,0 +1,46 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# новый push отменяет предыдущую сборку
+concurrency:
+  group: build
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # публикация сборки в ветку build
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      # проверка синтаксиса PHP-обработчиков (php есть в образе ubuntu-latest)
+      - run: for f in public/api/*.php; do php -l "$f"; done
+      - run: npm run build
+
+      # Готовая сборка публикуется в ветку build. На сервер её забирают из консоли Jino
+      # командой ~/update-site.sh (см. README): автоматическая загрузка из GitHub в Jino
+      # не работает — крупные передачи между ними обрываются.
+      - name: Publish build branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd dist
+          git init -q -b build
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -qm "Сборка ${GITHUB_SHA::7}"
+          git push -fq "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" build
