@@ -1,9 +1,13 @@
 <?php
-// Приём заявок с сайта (бронь стола и заказ еды) и пересылка в вебхук Make,
-// откуда сценарий отправляет уведомление в Telegram.
+// Приём заявок с сайта (бронь стола и заказ еды). Уведомления уходят двумя
+// независимыми каналами:
+//   - в вебхук Make, откуда сценарий шлёт сообщение в Telegram
+//     (российский хостинг не может обращаться к Telegram напрямую);
+//   - SMS админу напрямую через SMS.ru.
+// Заявка принята, если сработал хотя бы один канал.
 //
-// Адрес вебхука и секрет лежат вне папки сайта, в ~/ohotnik-config.php:
-//   <?php return ['make_webhook_url' => 'https://hook.eu2.make.com/...', 'make_secret' => '...'];
+// Настройки лежат вне папки сайта, в ~/ohotnik-config.php (см. docs/notifications-make.md):
+//   make_webhook_url, make_secret — Make; sms_ru_api_id, sms_to, sms_test — SMS.
 
 declare(strict_types=1);
 
@@ -73,7 +77,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $configPath = dirname(__DIR__, 3) . '/ohotnik-config.php';
 $config = is_file($configPath) ? require $configPath : [];
 $webhook = $config['make_webhook_url'] ?? '';
-if (!$webhook) {
+$smsApiId = $config['sms_ru_api_id'] ?? '';
+$smsTo = preg_replace('/[^\d,]/', '', (string) ($config['sms_to'] ?? ''));
+if (!$webhook && !($smsApiId && $smsTo)) {
     fail(503, 'Приём заявок временно не настроен. Позвоните нам, пожалуйста.');
 }
 
@@ -147,6 +153,7 @@ if ($type === 'booking') {
         '👤 ' . e($name),
         '📞 ' . e($phone),
     ];
+    $sms = "Бронь {$id}: " . $day->format('d.m') . " {$time}, {$guests} гост. {$name}, {$phone}";
 } elseif ($type === 'order') {
     $address = str_field($data, 'address', 200);
     $paymentLabels = ['cash' => 'Наличными курьеру', 'card' => 'Картой курьеру'];
@@ -188,6 +195,8 @@ if ($type === 'booking') {
     $lines[] = '👤 ' . e($name);
     $lines[] = '📞 ' . e($phone);
     $lines[] = '📍 ' . e($address);
+    $paymentShort = ($data['payment'] ?? '') === 'cash' ? 'наличными' : 'картой';
+    $sms = "Заказ {$id}: " . money($total) . ", {$paymentShort}. {$name}, {$phone}, " . mb_substr($address, 0, 60);
 } else {
     fail(400, 'Неизвестный тип заявки');
 }
@@ -212,25 +221,66 @@ $payload = array_merge([
     'text' => implode("\n", $lines),
 ]);
 
-// ---------- отправка в Make ----------
+// ---------- отправка уведомлений ----------
 
-$ch = curl_init($webhook);
-curl_setopt_array($ch, [
-    CURLOPT_POST => true,
-    CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE),
-    CURLOPT_HTTPHEADER => [
-        'Content-Type: application/json',
-    ],
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_CONNECTTIMEOUT => 5,
-    CURLOPT_TIMEOUT => 10,
-]);
-curl_exec($ch);
-$status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-$error = curl_error($ch);
+function send_to_make(string $url, array $payload): bool
+{
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE),
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_TIMEOUT => 10,
+    ]);
+    curl_exec($ch);
+    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    if ($status < 200 || $status >= 300) {
+        error_log("notify.php: Make webhook failed, status {$status}, " . curl_error($ch));
+        return false;
+    }
+    return true;
+}
 
-if ($status < 200 || $status >= 300) {
-    error_log("notify.php: Make webhook failed, status {$status}, {$error}");
+// https://sms.ru/api/send — несколько номеров через запятую
+function send_sms(string $apiId, string $to, string $text, bool $test): bool
+{
+    $params = ['api_id' => $apiId, 'to' => $to, 'msg' => $text, 'json' => 1];
+    if ($test) {
+        $params['test'] = 1; // имитация отправки: деньги не списываются, SMS не приходит
+    }
+    $ch = curl_init('https://sms.ru/sms/send');
+    curl_setopt_array($ch, [
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => http_build_query($params),
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_TIMEOUT => 10,
+    ]);
+    $response = json_decode((string) curl_exec($ch), true);
+    if (($response['status'] ?? '') !== 'OK') {
+        error_log('notify.php: SMS.ru failed: ' . json_encode($response ?: curl_error($ch), JSON_UNESCAPED_UNICODE));
+        return false;
+    }
+    // общий статус OK, но конкретный номер мог не принять SMS (например, неверный номер)
+    foreach ((array) ($response['sms'] ?? []) as $number => $result) {
+        if (($result['status'] ?? '') !== 'OK') {
+            error_log("notify.php: SMS.ru rejected {$number}: " . ($result['status_text'] ?? ''));
+        }
+    }
+    return true;
+}
+
+$delivered = false;
+if ($webhook) {
+    $delivered = send_to_make($webhook, $payload);
+}
+if ($smsApiId && $smsTo) {
+    $delivered = send_sms($smsApiId, $smsTo, $sms, !empty($config['sms_test'])) || $delivered;
+}
+
+if (!$delivered) {
     fail(502, 'Не удалось отправить заявку. Попробуйте ещё раз или позвоните нам.');
 }
 
