@@ -53,28 +53,37 @@ export const navLinks = [
   { label: 'Контакты', href: '#contacts' },
 ]
 
-export const menuCategories = [
-  'Блюда с мангала',
-  'Горячее',
-  'Холодные закуски',
-  'Салаты',
-  'Супы',
-  'Гарниры',
-  'Десерты',
-  'Напитки',
-]
+// Категории меню — вкладки показываются в этом порядке. «Десерты» и «Напитки»
+// вернуть сюда, когда появятся их фото и цены.
+export const menuCategories = ['Блюда с мангала', 'Горячее', 'Закуски', 'Салаты', 'Супы', 'Гарниры']
+
+// Фото блюд: /public/images/menu. ВНИМАНИЕ: вес и цены — временные, заменить на актуальные из меню ресторана.
+const dish = (slug) => `/images/menu/${slug}.webp`
 
 export const dishes = [
-  { id: 1, category: 'Блюда с мангала', name: 'Шашлык из свинины', weight: '200 г', price: 450, image: u('1529692236671-f1f6cf9683ba', 800) },
-  { id: 2, category: 'Блюда с мангала', name: 'Люля-кебаб из говядины', weight: '200 г', price: 420, image: u('1603360946369-dc9bb6258143', 800) },
-  { id: 3, category: 'Блюда с мангала', name: 'Стейк из лосося', weight: '160 г', price: 790, image: u('1467003909585-2f8a72700288', 800) },
-  { id: 4, category: 'Блюда с мангала', name: 'Овощи на мангале', weight: '250 г', price: 750, image: u('1540189549336-e6e99c3679fe', 800) },
-  { id: 5, category: 'Блюда с мангала', name: 'Стейк рибай', weight: '300 г', price: 1890, image: u('1600891964092-4316c288032e', 800) },
-  { id: 6, category: 'Горячее', name: 'Утиная грудка с соусом', weight: '220 г', price: 890, image: u('1414235077428-338989a2e8c0', 800) },
-  { id: 7, category: 'Горячее', name: 'Говядина томлёная', weight: '250 г', price: 820, image: u('1558030006-450675393462', 800) },
-  { id: 8, category: 'Салаты', name: 'Салат с ростбифом', weight: '200 г', price: 590, image: u('1512621776951-a57141f2eefd', 800) },
-  { id: 9, category: 'Салаты', name: 'Овощной салат', weight: '220 г', price: 390, image: u('1540189549336-e6e99c3679fe', 800) },
-  { id: 10, category: 'Десерты', name: 'Чизкейк', weight: '150 г', price: 380, image: u('1551218808-94e220e084d2', 800) },
+  { id: 101, category: 'Блюда с мангала', name: 'Шашлык из свинины', weight: '200 г', price: 450, image: dish('shashlyk-svinina') },
+  { id: 102, category: 'Блюда с мангала', name: 'Шашлык из курицы', weight: '200 г', price: 390, image: dish('shashlyk-kurica') },
+  { id: 103, category: 'Блюда с мангала', name: 'Люля-кебаб', weight: '200 г', price: 420, image: dish('lyulya-kebab') },
+
+  { id: 201, category: 'Горячее', name: 'Куриное филе в сливочно-грибном соусе с картофелем фри', weight: '350 г', price: 590, image: dish('kurica-slivochnyj-sous') },
+  { id: 202, category: 'Горячее', name: 'Шаурма с курицей', weight: '350 г', price: 350, image: dish('shaurma-kurica') },
+  { id: 203, category: 'Горячее', name: 'Шаурма с говядиной', weight: '350 г', price: 390, image: dish('shaurma-govyadina') },
+
+  { id: 301, category: 'Закуски', name: 'Пивная тарелка', weight: '800 г', price: 1290, image: dish('pivnaya-tarelka') },
+  { id: 302, category: 'Закуски', name: 'Сырные палочки с брусничным соусом', weight: '200 г', price: 390, image: dish('syrnye-palochki') },
+  { id: 303, category: 'Закуски', name: 'Брускетта с креветками', weight: '180 г', price: 450, image: dish('brusketta-krevetki') },
+  { id: 304, category: 'Закуски', name: 'Гренки из бородинского хлеба', weight: '200 г', price: 250, image: dish('grenki') },
+
+  { id: 401, category: 'Салаты', name: 'Цезарь с курицей', weight: '250 г', price: 490, image: dish('cezar-kurica') },
+  { id: 402, category: 'Салаты', name: 'Цезарь с креветками', weight: '250 г', price: 590, image: dish('cezar-krevetki') },
+  { id: 403, category: 'Салаты', name: 'Греческий салат', weight: '250 г', price: 420, image: dish('grecheskij-salat') },
+  { id: 404, category: 'Салаты', name: 'Тёплый салат с баклажаном и фетой', weight: '250 г', price: 450, image: dish('salat-baklazhan') },
+
+  { id: 501, category: 'Супы', name: 'Том ям', weight: '400 г', price: 590, image: dish('tom-yam') },
+  { id: 502, category: 'Супы', name: 'Грибной крем-суп в хлебе', weight: '400 г', price: 450, image: dish('sup-v-hlebe') },
+
+  { id: 601, category: 'Гарниры', name: 'Картофель фри с сырным соусом', weight: '150 г', price: 220, image: dish('kartofel-fri') },
+  { id: 602, category: 'Гарниры', name: 'Картофель по-деревенски с сырным соусом', weight: '200 г', price: 240, image: dish('kartofel-po-derevenski') },
 ]
 
 // Ссылки на карточки в VK-маркете ресторана
