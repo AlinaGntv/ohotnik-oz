@@ -13,6 +13,8 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # публикация сборки в ветку build
     timeout-minutes: 15
     env:
       # секреты нельзя проверять в if напрямую, поэтому прокидываем через env
@@ -31,29 +33,45 @@ jobs:
       - run: for f in public/api/*.php; do php -l "$f"; done
       - run: npm run build
 
-      # Деплой по HTTPS: собранный сайт уходит одним подписанным запросом в
-      # public/api/deploy.php на самом сайте. FTP и SFTP между GitHub и Jino
-      # регулярно обрывались, а HTTPS до сайта доходит стабильно.
-      - name: Upload to Jino
+      # Крупные передачи из GitHub в Jino зависают (FTP, SFTP и HTTPS-загрузка одинаково),
+      # а скачивание с GitHub на Jino работает. Поэтому сборка публикуется в ветку build,
+      # а на сайт уходит только короткий подписанный манифест — файлы api/deploy.php
+      # скачивает сам и проверяет по sha256.
+      - name: Publish build branch
+        if: env.DEPLOY_TOKEN != ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd dist
+          git init -q -b build
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -qm "Сборка ${GITHUB_SHA::7}"
+          git push -fq "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" build
+          echo "BUILD_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Deploy to Jino
         if: env.DEPLOY_TOKEN != ''
         timeout-minutes: 5
         run: |
           python3 - <<'EOF'
-          import base64, json, os
+          import hashlib, json, os
           files = {}
-          for root, _, names in os.walk('dist'):
+          for root, dirs, names in os.walk('dist'):
+              dirs[:] = [d for d in dirs if d != '.git']
               for name in names:
                   path = os.path.join(root, name)
                   with open(path, 'rb') as f:
-                      files[os.path.relpath(path, 'dist').replace(os.sep, '/')] = base64.b64encode(f.read()).decode()
-          with open('deploy.json', 'w') as f:
-              json.dump({'files': files}, f)
+                      files[os.path.relpath(path, 'dist').replace(os.sep, '/')] = hashlib.sha256(f.read()).hexdigest()
+          with open('manifest.json', 'w') as f:
+              json.dump({'commit': os.environ['BUILD_SHA'], 'hashes': files}, f)
           print(f'Файлов в сборке: {len(files)}')
           EOF
 
           TS=$(date +%s)
-          SIG=$( { printf '%s.' "$TS"; cat deploy.json; } | openssl dgst -sha256 -hmac "$DEPLOY_TOKEN" | sed 's/^.*= //')
-          curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 5 --max-time 60             -X POST https://ohotnik-oz.ru/api/deploy.php             -H 'Content-Type: application/json'             -H "X-Deploy-Timestamp: $TS"             -H "X-Deploy-Signature: $SIG"             --data-binary @deploy.json
+          SIG=$( { printf '%s.' "$TS"; cat manifest.json; } | openssl dgst -sha256 -hmac "$DEPLOY_TOKEN" | sed 's/^.*= //')
+          curl --fail-with-body -sS --retry 2 --retry-all-errors --retry-delay 5 --max-time 180             -X POST https://ohotnik-oz.ru/api/deploy.php             -H 'Content-Type: application/json'             -H "X-Deploy-Timestamp: $TS"             -H "X-Deploy-Signature: $SIG"             --data-binary @manifest.json
           echo
 
       - name: Skip upload

@@ -28,7 +28,7 @@ npm run dev
 
 ## Деплой
 
-При каждом push в ветку `main` GitHub Actions собирает сайт и отправляет папку `dist` одним подписанным HTTPS-запросом в `public/api/deploy.php` на сайте (`.github/workflows/deploy.yml`). FTP и SFTP между GitHub и Jino работали нестабильно, поэтому от них отказались.
+При каждом push в ветку `main` GitHub Actions собирает сайт, публикует сборку в ветку `build` и отправляет короткий подписанный манифест (пути и sha256 файлов) в `public/api/deploy.php`. Сайт сам скачивает изменившиеся файлы с GitHub и проверяет их по контрольной сумме (`.github/workflows/deploy.yml`). Так сделано потому, что крупные передачи из GitHub в Jino зависают (FTP, SFTP и HTTPS-загрузка), а в обратную сторону всё работает.
 
 Нужен один секрет репозитория (Settings → Secrets and variables → Actions):
 

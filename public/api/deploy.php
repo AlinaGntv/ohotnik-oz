@@ -1,12 +1,16 @@
 <?php
-// Приём деплоя из GitHub Actions по HTTPS (FTP/SFTP между GitHub и Jino нестабильны).
+// Деплой по сигналу из GitHub Actions. Крупные передачи данных из GitHub в Jino
+// зависают (FTP, SFTP и HTTPS-загрузка одинаково), а короткие запросы и скачивание
+// с GitHub на Jino работают стабильно. Поэтому GitHub присылает только короткий
+// подписанный манифест, а файлы сайт скачивает сам.
 //
-// Запрос: POST, тело — JSON {"files": {"путь/файла": "<base64>", ...}},
+// Запрос: POST, тело — JSON {"commit": "<sha коммита ветки build>", "hashes": {"путь": "<sha256>", ...}},
 // заголовки X-Deploy-Timestamp (unix-время) и
 // X-Deploy-Signature = hex(HMAC-SHA256(timestamp + "." + тело, deploy_token)).
 // deploy_token лежит в ~/ohotnik-config.php и в секрете DEPLOY_TOKEN репозитория.
 //
-// Файлы пишутся в папку сайта; старые сборки в assets/, которых нет в новой, удаляются.
+// Скачиваются только изменившиеся файлы, каждый проверяется по sha256.
+// Старые сборки в assets/, которых нет в манифесте, удаляются.
 // Всё, что вне папки сайта (конфиг, логи), скрипт не трогает.
 
 declare(strict_types=1);
@@ -15,12 +19,34 @@ header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
 const MAX_AGE = 300; // подпись действительна 5 минут
+const REPO = 'AlinaGntv/ohotnik-oz';
+
+set_time_limit(240);
 
 function done(int $code, array $body): void
 {
     http_response_code($code);
     echo json_encode($body, JSON_UNESCAPED_UNICODE);
     exit;
+}
+
+function download(string $url): ?string
+{
+    for ($attempt = 1; $attempt <= 3; $attempt++) {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_TIMEOUT => 60,
+        ]);
+        $data = curl_exec($ch);
+        if (is_string($data) && curl_getinfo($ch, CURLINFO_HTTP_CODE) === 200) {
+            return $data;
+        }
+        sleep(2);
+    }
+    return null;
 }
 
 $configPath = dirname(__DIR__, 3) . '/ohotnik-config.php';
@@ -41,26 +67,45 @@ if (abs(time() - $ts) > MAX_AGE || !hash_equals($expected, $signature)) {
     done(403, ['ok' => false, 'error' => 'bad signature']);
 }
 
-$files = json_decode($body, true)['files'] ?? null;
-if (!is_array($files) || !isset($files['index.html'])) {
-    done(400, ['ok' => false, 'error' => 'no files']);
+$manifest = json_decode($body, true);
+$commit = (string) ($manifest['commit'] ?? '');
+$files = $manifest['hashes'] ?? null;
+if (!preg_match('/^[0-9a-f]{40}$/', $commit) || !is_array($files) || !isset($files['index.html'])) {
+    done(400, ['ok' => false, 'error' => 'bad manifest']);
 }
 
 $root = dirname(__DIR__); // папка сайта: .../domains/ohotnik-oz.ru
-$written = [];
 
-foreach ($files as $path => $content) {
+// 1. проверяем пути и скачиваем изменившиеся файлы во временную память
+$pending = [];
+foreach ($files as $path => $hash) {
     $path = (string) $path;
     // только относительные пути без «..»; из скрытых файлов разрешён лишь .htaccess
     $safe = preg_match('#^[A-Za-z0-9_\-./]+$#', $path)
         && strpos($path, '..') === false
         && $path[0] !== '/'
-        && !preg_match('#(^|/)\.(?!htaccess$)#', $path);
-    $data = is_string($content) ? base64_decode($content, true) : false;
-    if (!$safe || $data === false) {
+        && !preg_match('#(^|/)\.(?!htaccess$)#', $path)
+        && preg_match('/^[0-9a-f]{64}$/', (string) $hash);
+    if (!$safe) {
         done(400, ['ok' => false, 'error' => "bad file: {$path}"]);
     }
 
+    $target = "{$root}/{$path}";
+    if (is_file($target) && hash_file('sha256', $target) === $hash) {
+        continue; // файл не менялся
+    }
+
+    $data = download('https://raw.githubusercontent.com/' . REPO . "/{$commit}/{$path}");
+    if ($data === null || hash('sha256', $data) !== $hash) {
+        done(502, ['ok' => false, 'error' => "download failed: {$path}"]);
+    }
+    $pending[$path] = $data;
+}
+
+// 2. записываем — только когда скачано всё, чтобы не оставить сайт наполовину обновлённым.
+// index.html последним: он ссылается на новые файлы assets/
+uksort($pending, fn ($a, $b) => ($a === 'index.html') <=> ($b === 'index.html'));
+foreach ($pending as $path => $data) {
     $target = "{$root}/{$path}";
     $dir = dirname($target);
     if (!is_dir($dir) && !mkdir($dir, 0755, true)) {
@@ -74,15 +119,14 @@ foreach ($files as $path => $content) {
     }
     chmod($target, 0644);
     @chmod($dir, 0755);
-    $written[$path] = true;
 }
 
-// удаляем старые файлы сборки (у них хэш в имени, новые сборки их не перезаписывают)
+// 3. удаляем старые файлы сборки (у них хэш в имени, новые сборки их не перезаписывают)
 $removed = 0;
 foreach (glob("{$root}/assets/*") ?: [] as $old) {
-    if (is_file($old) && !isset($written['assets/' . basename($old)])) {
+    if (is_file($old) && !isset($files['assets/' . basename($old)])) {
         $removed += (int) unlink($old);
     }
 }
 
-done(200, ['ok' => true, 'written' => count($written), 'removed' => $removed]);
+done(200, ['ok' => true, 'commit' => substr($commit, 0, 7), 'updated' => array_keys($pending), 'removed' => $removed]);
