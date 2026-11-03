@@ -74,6 +74,8 @@
     'name name name'
     'phone phone phone'
     'date time guests'
+    'comment comment comment'
+    'error error error'
     'submit submit submit'
     'note note note';
   gap: 20px;
@@ -86,6 +88,31 @@
 .field--guests { grid-area: guests; }
 .booking__submit { grid-area: submit; }
 .booking__note { grid-area: note; }
+.field--comment { grid-area: comment; }
+.booking__error { grid-area: error; }
+
+.booking__error {
+  padding: 12px 16px;
+  border: 1px solid rgba(230, 120, 100, 0.4);
+  border-radius: var(--radius-sm);
+  background: rgba(230, 120, 100, 0.1);
+  color: #f3b3a6;
+  font-size: 14px;
+}
+
+/* поле-ловушка для ботов */
+.booking__trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.booking__submit:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
 
 .field {
   display: flex;
@@ -226,7 +253,7 @@
 @media (max-width: 560px) {
   .booking__form {
     grid-template-columns: 1fr;
-    grid-template-areas: 'name' 'phone' 'date' 'time' 'guests' 'submit' 'note';
+    grid-template-areas: 'name' 'phone' 'date' 'time' 'guests' 'comment' 'error' 'submit' 'note';
     gap: 16px;
   }
 

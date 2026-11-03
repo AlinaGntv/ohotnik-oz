@@ -27,6 +27,8 @@ jobs:
 
       - run: npm ci
       - run: npm run lint
+      # проверка синтаксиса PHP-обработчиков (php есть в образе ubuntu-latest)
+      - run: for f in public/api/*.php; do php -l "$f"; done
       - run: npm run build
 
       # Загрузка по SFTP (порт 2222): одно зашифрованное соединение без отдельных
@@ -58,7 +60,7 @@ jobs:
           open -u "$FTP_USERNAME","$FTP_PASSWORD" sftp://$FTP_SERVER:2222
           mirror -R --verbose --parallel=2 dist/ "$FTP_SERVER_DIR"
           cd "$FTP_SERVER_DIR"
-          chmod 755 assets images
+          chmod 755 assets images api
           bye
           EOF
           }

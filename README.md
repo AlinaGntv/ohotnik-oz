@@ -22,6 +22,10 @@ npm run dev
 | Логотип и иконки сайта | `public/images/logo.webp`, `public/favicon.png` |
 | Цвета и шрифты | `src/styles/global.css` |
 
+## Заявки и уведомления
+
+Бронь стола и заказ доставки отправляются в `public/api/notify.php`, оттуда — в вебхук Make и в Telegram. Настройка бота, сценария Make и конфига на сервере: [docs/notifications-make.md](docs/notifications-make.md).
+
 ## Деплой
 
 При каждом push в ветку `main` GitHub Actions собирает сайт и загружает папку `dist` на хостинг Jino по FTP (`.github/workflows/deploy.yml`).

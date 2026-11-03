@@ -3,22 +3,44 @@ import Reveal from './Reveal.jsx'
 import { ArrowRight, Calendar, Clock, Phone } from './Icons.jsx'
 import { contacts, images } from '../data/content.js'
 import useParallax from '../hooks/useParallax.js'
+import { sendRequest } from '../lib/api.js'
+import { formatPhone, isPhoneComplete } from '../lib/phone.js'
 import './Booking.css'
 
-const initial = { name: '', phone: '', date: '', time: '', guests: 2 }
+const initial = { name: '', phone: '', date: '', time: '', guests: 2, comment: '', website: '' }
+
+// сегодняшняя дата в формате YYYY-MM-DD по местному времени — нижняя граница выбора
+const today = () => {
+  const d = new Date()
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10)
+}
 
 export default function Booking() {
   const [form, setForm] = useState(initial)
-  const [sent, setSent] = useState(false)
+  const [status, setStatus] = useState('idle') // idle | sending | sent
+  const [error, setError] = useState('')
+  const [requestId, setRequestId] = useState('')
   const bgRef = useParallax(-0.15)
 
   const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // TODO: отправка заявки на бэкенд
-    setSent(true)
-    setForm(initial)
+    if (!isPhoneComplete(form.phone)) {
+      setError('Введите номер телефона полностью')
+      return
+    }
+    setError('')
+    setStatus('sending')
+    try {
+      const res = await sendRequest('booking', form)
+      setRequestId(res.id)
+      setStatus('sent')
+      setForm(initial)
+    } catch (err) {
+      setError(err.message)
+      setStatus('idle')
+    }
   }
 
   return (
@@ -44,12 +66,14 @@ export default function Booking() {
         </Reveal>
 
         <Reveal variant="right" delay={150} className="booking__panel">
-          {sent ? (
+          {status === 'sent' ? (
             <div className="booking__success">
               <span className="booking__success-icon">✓</span>
               <h3>Спасибо, заявка принята!</h3>
-              <p>Мы перезвоним вам в ближайшее время для подтверждения брони.</p>
-              <button className="btn btn--outline btn--sm" onClick={() => setSent(false)}>
+              <p>
+                Номер заявки — {requestId}. Мы перезвоним вам в ближайшее время для подтверждения брони.
+              </p>
+              <button className="btn btn--outline btn--sm" onClick={() => setStatus('idle')}>
                 Новая заявка
               </button>
             </div>
@@ -57,23 +81,25 @@ export default function Booking() {
             <form className="booking__form" onSubmit={handleSubmit}>
               <label className="field field--name">
                 <span>Ваше имя</span>
-                <input required placeholder="Иванова Анна" value={form.name} onChange={set('name')} />
+                <input required maxLength={80} placeholder="Иванова Анна" value={form.name} onChange={set('name')} />
               </label>
               <label className="field field--phone">
                 <span>Телефон</span>
                 <input
                   required
                   type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
                   placeholder="+7 (999) 123-45-67"
                   value={form.phone}
-                  onChange={set('phone')}
+                  onChange={(e) => setForm((f) => ({ ...f, phone: formatPhone(e.target.value) }))}
                 />
               </label>
               <label className="field field--date">
                 <span>Дата</span>
                 <div className="field__control">
                   <Calendar />
-                  <input required type="date" value={form.date} onChange={set('date')} />
+                  <input required type="date" min={today()} value={form.date} onChange={set('date')} />
                 </div>
               </label>
               <label className="field field--time">
@@ -97,14 +123,40 @@ export default function Booking() {
                   <button
                     type="button"
                     aria-label="Больше гостей"
-                    onClick={() => setForm((f) => ({ ...f, guests: Math.min(200, f.guests + 1) }))}
+                    onClick={() => setForm((f) => ({ ...f, guests: Math.min(300, f.guests + 1) }))}
                   >
                     +
                   </button>
                 </div>
               </div>
-              <button type="submit" className="btn btn--gold booking__submit">
-                Забронировать стол <ArrowRight />
+              <label className="field field--comment">
+                <span>Пожелания (необязательно)</span>
+                <input
+                  maxLength={500}
+                  placeholder="Например: у окна, день рождения, детский стульчик"
+                  value={form.comment}
+                  onChange={set('comment')}
+                />
+              </label>
+
+              {/* поле-ловушка для ботов, людям не видно */}
+              <input
+                className="booking__trap"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                value={form.website}
+                onChange={set('website')}
+              />
+
+              {error && (
+                <p className="booking__error" role="alert">
+                  {error}
+                </p>
+              )}
+
+              <button type="submit" className="btn btn--gold booking__submit" disabled={status === 'sending'}>
+                {status === 'sending' ? 'Отправляем…' : 'Забронировать стол'} <ArrowRight />
               </button>
               <p className="booking__note">
                 Нажимая кнопку, вы соглашаетесь с <a href="#">политикой конфиденциальности</a>

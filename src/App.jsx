@@ -12,6 +12,7 @@ import Gallery from './components/Gallery.jsx'
 import Reviews from './components/Reviews.jsx'
 import Booking from './components/Booking.jsx'
 import Footer from './components/Footer.jsx'
+import CartDrawer from './components/CartDrawer.jsx'
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
         <Booking />
       </main>
       <Footer />
+      <CartDrawer />
     </CartProvider>
   )
 }

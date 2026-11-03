@@ -17,7 +17,7 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [active, setActive] = useState('')
-  const { count } = useCart()
+  const { count, open: openCart } = useCart()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -86,14 +86,21 @@ export default function Header() {
               <span>{contacts.phone}</span>
             </a>
             <Messengers className="header__messengers" />
-            <a href="#menu" className="header__cart" aria-label="Корзина" onClick={close}>
+            <button
+              className="header__cart"
+              aria-label={count ? `Корзина, блюд: ${count}` : 'Корзина'}
+              onClick={() => {
+                close()
+                openCart()
+              }}
+            >
               <Cart />
               {count > 0 && (
                 <span className="header__cart-badge" key={count}>
                   {count}
                 </span>
               )}
-            </a>
+            </button>
             <a href="#booking" className="btn btn--gold btn--sm header__cta">
               Забронировать стол <ArrowRight />
             </a>
