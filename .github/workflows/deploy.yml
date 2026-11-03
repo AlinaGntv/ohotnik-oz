@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 15
     env:
       # секреты нельзя проверять в if напрямую, поэтому прокидываем через env
-      FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+      DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
     steps:
       - uses: actions/checkout@v5
 
@@ -31,51 +31,31 @@ jobs:
       - run: for f in public/api/*.php; do php -l "$f"; done
       - run: npm run build
 
-      # Загрузка по SFTP (порт 2222): одно зашифрованное соединение без отдельных
-      # data-портов, как у FTP — они между GitHub и Jino регулярно обрывались.
-      # После загрузки явно выставляем папкам 755, иначе Jino отдаёт 403.
+      # Деплой по HTTPS: собранный сайт уходит одним подписанным запросом в
+      # public/api/deploy.php на самом сайте. FTP и SFTP между GitHub и Jino
+      # регулярно обрывались, а HTTPS до сайта доходит стабильно.
       - name: Upload to Jino
-        if: env.FTP_PASSWORD != ''
-        timeout-minutes: 8
-        env:
-          FTP_SERVER: ${{ secrets.FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_SERVER_DIR: ${{ secrets.FTP_SERVER_DIR }}
-          # ключи SFTP-сервера Jino (ssh-keyscan -p 2222) — соединение проверяется,
-          # подменить сервер не получится
-          JINO_HOST_KEYS: |
-            [c825fa2a9b46.hosting.myjino.ru]:2222 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLuwsI8BPoCJtGTr7Kkp9jkzgP5T2sG8sJviodLk3Glxgn4g4x6oZ7YKWEDmdRqW955iLGomP9xykgp19YUCcNY=
-            [c825fa2a9b46.hosting.myjino.ru]:2222 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCmbKcCNQR8hOtr+38IRYSepOSyzRhHHH2sMV2padpBUelN1yqbzkd56IpihD+oKJXDnioSRmpyW/Wq2vokafoPXWdkso99XcWaujjWpTn68DJEPHs0pcCEkYSrxaYjMGhgMhT33CRt/pSYVq6Cuqip+teyqGsW/H1us1d9Q7LUQGOFs7ZylbeFzOQKqEBYZ69Z2QUCi1vpMMMlRfvKNrzy3/WIQo5wBRHcUgPYHBGfpQ7GSkrTCBVNVsOAiVB2Z+RBzFeSwQh7TTydpRqGK/WC5o4w6yh0f5Mh7UbIFRhlT5MnBFFXYJ7Zs+AEuHDt5MBnXwRS0Uf+bt1N8N8lzwY7+fpADVmxIM5LjM5KZajS761ZXt88KU6ZslU+FDMnZKEXnwV1vOuKhR2kpEWirgW0jeeE5uNwWgP4tn9uzmbNtk+6DEIgzPgk+4XZW5WNWEmNfW//DMQsL2MQ50EWoT+XdbYrI8RDLnGT+MW5LB8mM40GSWZFMduPetV5D03WjTDUffme+Pyt4KIcyNgLhknNY7nQoFO7tEXbRXZiIsZPal9bFsFokYuh/nymjgDRrQIEF5pHtRW1bddO3SQ5dg1s284+2gQzg8OWSqWnCT1BLW2mNUv8OOnun5XfAbVrbhU1g+v3e60yTh5G5gVxvQbDJX+WBxoiqs0XYCBc/HSj9Q==
+        if: env.DEPLOY_TOKEN != ''
+        timeout-minutes: 5
         run: |
-          sudo apt-get update -qq > /dev/null && sudo apt-get install -y -qq lftp > /dev/null
-          mkdir -p ~/.ssh && echo "$JINO_HOST_KEYS" > ~/.ssh/known_hosts_jino
-
-          upload() {
-            lftp <<EOF
-          set cmd:fail-exit yes
-          set net:timeout 30
-          set net:max-retries 2
-          set net:reconnect-interval-base 5
-          set sftp:connect-program "ssh -a -x -o UserKnownHostsFile=$HOME/.ssh/known_hosts_jino -o StrictHostKeyChecking=yes"
-          open -u "$FTP_USERNAME","$FTP_PASSWORD" sftp://$FTP_SERVER:2222
-          mirror -R --verbose --parallel=2 dist/ "$FTP_SERVER_DIR"
-          cd "$FTP_SERVER_DIR"
-          chmod 755 assets images api
-          bye
+          python3 - <<'EOF'
+          import base64, json, os
+          files = {}
+          for root, _, names in os.walk('dist'):
+              for name in names:
+                  path = os.path.join(root, name)
+                  with open(path, 'rb') as f:
+                      files[os.path.relpath(path, 'dist').replace(os.sep, '/')] = base64.b64encode(f.read()).decode()
+          with open('deploy.json', 'w') as f:
+              json.dump({'files': files}, f)
+          print(f'Файлов в сборке: {len(files)}')
           EOF
-          }
 
-          for attempt in 1 2 3; do
-            if upload; then
-              echo "Загружено с попытки $attempt"
-              exit 0
-            fi
-            echo "::warning::Попытка $attempt не удалась, повтор через 10 секунд"
-            sleep 10
-          done
-          echo "::error::Не удалось загрузить сайт на Jino за три попытки"
-          exit 1
+          TS=$(date +%s)
+          SIG=$( { printf '%s.' "$TS"; cat deploy.json; } | openssl dgst -sha256 -hmac "$DEPLOY_TOKEN" | sed 's/^.*= //')
+          curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 5 --max-time 60             -X POST https://ohotnik-oz.ru/api/deploy.php             -H 'Content-Type: application/json'             -H "X-Deploy-Timestamp: $TS"             -H "X-Deploy-Signature: $SIG"             --data-binary @deploy.json
+          echo
 
       - name: Skip upload
-        if: env.FTP_PASSWORD == ''
-        run: echo "::notice::Секреты FTP не заданы — сайт собран, но не загружен на хостинг"
+        if: env.DEPLOY_TOKEN == ''
+        run: echo "::notice::Секрет DEPLOY_TOKEN не задан — сайт собран, но не загружен на хостинг"

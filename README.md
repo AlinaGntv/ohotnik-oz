@@ -28,17 +28,14 @@ npm run dev
 
 ## Деплой
 
-При каждом push в ветку `main` GitHub Actions собирает сайт и загружает папку `dist` на хостинг Jino по FTP (`.github/workflows/deploy.yml`).
+При каждом push в ветку `main` GitHub Actions собирает сайт и отправляет папку `dist` одним подписанным HTTPS-запросом в `public/api/deploy.php` на сайте (`.github/workflows/deploy.yml`). FTP и SFTP между GitHub и Jino работали нестабильно, поэтому от них отказались.
 
-Нужные секреты репозитория (Settings → Secrets and variables → Actions):
+Нужен один секрет репозитория (Settings → Secrets and variables → Actions):
 
 | Секрет | Значение |
 |---|---|
-| `FTP_SERVER` | `c825fa2a9b46.hosting.myjino.ru` |
-| `FTP_USERNAME` | логин FTP-аккаунта |
-| `FTP_PASSWORD` | пароль FTP-аккаунта |
-| `FTP_SERVER_DIR` | папка сайта на сервере, со слешем в конце, сейчас `/domains/ohotnik-oz.ru/` |
+| `DEPLOY_TOKEN` | тот же ключ, что `deploy_token` в `~/ohotnik-config.php` на сервере |
 
-Пока секреты не заданы, сборка проходит, а шаг загрузки пропускается.
+Пока секрет не задан, сборка проходит, а шаг загрузки пропускается. Без `deploy_token` в конфиге `deploy.php` отвечает 404.
 
 Ручная сборка: `npm run build`, готовые файлы окажутся в `dist`.
