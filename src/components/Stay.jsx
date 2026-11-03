@@ -1,27 +1,31 @@
+import { Link } from 'react-router'
 import Reveal from './Reveal.jsx'
 import { ArrowRight, Check, Clock, Users } from './Icons.jsx'
 import { houses, housesInfo, rooms } from '../data/content.js'
 import './Stay.css'
 
-export default function Stay() {
+// headless — без заголовка секции (на странице /stay заголовок в PageHero)
+export default function Stay({ headless = false }) {
   return (
     <section className="stay dark section" id="stay">
       <div className="container">
-        <div className="section-head">
-          <Reveal className="section-head__text">
-            <span className="eyebrow">Отдых и проживание</span>
-            <h2 className="section-title">Отдых в окружении природы</h2>
-            <p className="lead">
-              {housesInfo.count} отапливаемых мангальных домиков и {rooms.count} гостиничных номеров в лесопарке.
-              Отметить можно абсолютно любой праздник.
-            </p>
-          </Reveal>
-          <Reveal delay={150}>
-            <a href={housesInfo.link} target="_blank" rel="noopener noreferrer" className="btn btn--outline">
-              Все домики <ArrowRight />
-            </a>
-          </Reveal>
-        </div>
+        {!headless && (
+          <div className="section-head">
+            <Reveal className="section-head__text">
+              <span className="eyebrow">Отдых и проживание</span>
+              <h2 className="section-title">Отдых в окружении природы</h2>
+              <p className="lead">
+                {housesInfo.count} отапливаемых мангальных домиков и {rooms.count} гостиничных номеров в лесопарке.
+                Отметить можно абсолютно любой праздник.
+              </p>
+            </Reveal>
+            <Reveal delay={150}>
+              <Link to="/stay" className="btn btn--outline">
+                Подробнее и бронь <ArrowRight />
+              </Link>
+            </Reveal>
+          </div>
+        )}
 
         <div className="stay__houses">
           {houses.map((h, i) => (
@@ -82,9 +86,9 @@ export default function Stay() {
             <strong className="offer__big">−50%</strong>
             <h3 className="offer__title">на второй день свадьбы</h3>
             <p className="offer__text">Продолжите праздник в мангальном домике со скидкой 50%.</p>
-            <a href="#booking" className="offer__link">
+            <Link to="/stay#stay-form" className="offer__link">
               Забронировать <ArrowRight />
-            </a>
+            </Link>
           </Reveal>
         </div>
       </div>

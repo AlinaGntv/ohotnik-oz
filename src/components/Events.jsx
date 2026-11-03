@@ -1,51 +1,9 @@
 import Reveal from './Reveal.jsx'
-import { ArrowRight, Check, Users } from './Icons.jsx'
+import { Link } from 'react-router'
+import HallCard from './HallCard.jsx'
+import { ArrowRight } from './Icons.jsx'
 import { banquetTerms, halls } from '../data/content.js'
 import './Events.css'
-
-function HallCard({ hall }) {
-  return (
-    <article className="hall">
-      <div className="hall__img">
-        <img className="img-cover" src={hall.image} alt={hall.name} loading="lazy" />
-        <span className="hall__capacity">
-          <Users />
-          {hall.capacity}
-        </span>
-      </div>
-      <div className="hall__body">
-        <h3 className="hall__name">{hall.name}</h3>
-        <ul className="hall__features">
-          {hall.features.map((f) => (
-            <li key={f}>
-              <Check />
-              {f}
-            </li>
-          ))}
-        </ul>
-        {(hall.rent || hall.extras.length > 0) && (
-          <dl className="hall__prices">
-            {hall.rent && (
-              <div>
-                <dt>Аренда зала</dt>
-                <dd>{hall.rent}</dd>
-              </div>
-            )}
-            {hall.extras.map((e) => (
-              <div key={e.label}>
-                <dt>{e.label}</dt>
-                <dd>{e.price}</dd>
-              </div>
-            ))}
-          </dl>
-        )}
-        <a href={hall.link} target="_blank" rel="noopener noreferrer" className="hall__link">
-          Подробнее о зале <ArrowRight />
-        </a>
-      </div>
-    </article>
-  )
-}
 
 export default function Events() {
   return (
@@ -61,9 +19,9 @@ export default function Events() {
             </p>
           </Reveal>
           <Reveal delay={150}>
-            <a href="#booking" className="btn btn--gold">
-              Забронировать зал <ArrowRight />
-            </a>
+            <Link to="/banquets" className="btn btn--gold">
+              Подробнее о банкетах <ArrowRight />
+            </Link>
           </Reveal>
         </div>
 

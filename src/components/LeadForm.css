@@ -1,0 +1,144 @@
+.lead-form {
+  background: var(--c-cream-2);
+  scroll-margin-top: 60px;
+}
+
+.lead-form__inner {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: clamp(40px, 6vw, 96px);
+  align-items: start;
+}
+
+.lead-form__intro .lead {
+  margin-top: 20px;
+  max-width: 420px;
+}
+
+.lead-form__panel {
+  padding: clamp(24px, 3.6vw, 44px);
+  border-radius: calc(var(--radius) + 4px);
+  background: var(--c-card);
+  box-shadow: var(--shadow);
+}
+
+.lead-form__form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.lead-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-text-muted);
+}
+
+.lead-field--wide,
+.lead-form__error,
+.lead-form__consent,
+.lead-form__submit {
+  grid-column: 1 / -1;
+}
+
+.lead-field input,
+.lead-field select,
+.lead-field textarea {
+  width: 100%;
+  min-height: 50px;
+  padding: 13px 16px;
+  border: 1px solid var(--c-line-light);
+  border-radius: var(--radius-sm);
+  background: var(--c-cream);
+  color: var(--c-text);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.lead-field textarea {
+  resize: vertical;
+}
+
+.lead-field input:focus,
+.lead-field select:focus,
+.lead-field textarea:focus {
+  border-color: var(--c-gold);
+  background: var(--c-card);
+}
+
+.lead-form__trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.lead-form__error {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(200, 80, 60, 0.1);
+  color: #a3412f;
+  font-size: 14px;
+}
+
+.lead-form__consent {
+  color: var(--c-text-muted);
+}
+
+.lead-form__submit {
+  height: 56px;
+}
+
+.lead-form__submit:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.lead-form__done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 32px 0;
+  text-align: center;
+}
+
+.lead-form__done h3 {
+  font-size: 30px;
+}
+
+.lead-form__done p {
+  max-width: 360px;
+  color: var(--c-text-muted);
+}
+
+.lead-form__done-icon {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border: 1px solid var(--c-gold);
+  border-radius: 50%;
+  font-size: 26px;
+  color: var(--c-gold-dark);
+  animation: badge-pop 0.6s var(--ease);
+}
+
+@media (max-width: 960px) {
+  .lead-form__inner {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .lead-form__form {
+    grid-template-columns: 1fr;
+  }
+}

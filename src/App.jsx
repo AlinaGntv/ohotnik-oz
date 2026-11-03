@@ -10,6 +10,10 @@ import Consent from './pages/legal/Consent.jsx'
 import Offer from './pages/legal/Offer.jsx'
 import Requisites from './pages/legal/Requisites.jsx'
 import NotFound from './pages/NotFound.jsx'
+import MenuPage from './pages/MenuPage.jsx'
+import BanquetsPage from './pages/BanquetsPage.jsx'
+import StayPage from './pages/StayPage.jsx'
+import ContactsPage from './pages/ContactsPage.jsx'
 
 export default function App() {
   return (
@@ -19,6 +23,10 @@ export default function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/menu" element={<MenuPage />} />
+          <Route path="/banquets" element={<BanquetsPage />} />
+          <Route path="/stay" element={<StayPage />} />
+          <Route path="/contacts" element={<ContactsPage />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/consent" element={<Consent />} />
           <Route path="/offer" element={<Offer />} />

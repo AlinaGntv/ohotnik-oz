@@ -130,35 +130,58 @@ $phone = phone_field($data);
 $comment = str_field($data, 'comment', 500, false);
 
 if ($type === 'booking') {
-    $date = str_field($data, 'date', 10);
-    $time = str_field($data, 'time', 5);
-    $guests = (int) ($data['guests'] ?? 0);
+    // kind: table — бронь стола (главная), banquet — заявка на банкет, stay — домик или номер.
+    // Для Make это всё type = booking (одна ветка «Бронь»), различается заголовком.
+    $kind = $data['kind'] ?? 'table';
+    if (!in_array($kind, ['table', 'banquet', 'stay'], true)) {
+        fail(400, 'Неизвестный тип брони');
+    }
 
+    $date = str_field($data, 'date', 10);
+    $guests = (int) ($data['guests'] ?? 0);
     $day = DateTimeImmutable::createFromFormat('!Y-m-d', $date, new DateTimeZone(TZ));
     if (!$day || $day < $created->setTime(0, 0)) {
         fail(422, 'Выберите дату не раньше сегодняшней');
-    }
-    if (!preg_match('/^([01]\d|2[0-3]):[0-5]\d$/', $time)) {
-        fail(422, 'Проверьте время');
     }
     if ($guests < 1 || $guests > 300) {
         fail(422, 'Проверьте количество гостей');
     }
 
-    $fields = [
-        'date' => $day->format('d.m.Y'),
-        'time' => $time,
-        'guests' => $guests,
-    ];
-    $lines = [
-        "🍽 <b>Бронь стола</b> · № {$id}",
-        '',
-        '📅 ' . e($fields['date']) . ' в ' . e($time),
-        "👥 Гостей: {$guests}",
-        '👤 ' . e($name),
-        '📞 ' . e($phone),
-    ];
-    $sms = "Бронь {$id}: " . $day->format('d.m') . " {$time}, {$guests} гост. {$name}, {$phone}";
+    $fields = ['kind' => $kind, 'date' => $day->format('d.m.Y'), 'guests' => $guests];
+    $dateLine = '📅 ' . e($fields['date']);
+    $smsWhen = $day->format('d.m');
+
+    if ($kind === 'table') {
+        $time = str_field($data, 'time', 5);
+        if (!preg_match('/^([01]\d|2[0-3]):[0-5]\d$/', $time)) {
+            fail(422, 'Проверьте время');
+        }
+        $fields['time'] = $time;
+        $dateLine .= ' в ' . e($time);
+        $smsWhen .= " {$time}";
+        $title = '🍽 <b>Бронь стола</b>';
+        $smsTitle = 'Бронь';
+        $extra = [];
+    } elseif ($kind === 'banquet') {
+        $fields['occasion'] = str_field($data, 'occasion', 60);
+        $fields['hall'] = str_field($data, 'hall', 60, false);
+        $title = '🎉 <b>Заявка на банкет</b>';
+        $smsTitle = 'Банкет';
+        $extra = ['🥂 Повод: ' . e($fields['occasion']), '🏛 Зал: ' . e($fields['hall'] ?: 'помочь с выбором')];
+    } else {
+        $fields['option'] = str_field($data, 'option', 120);
+        $title = '🏡 <b>Бронь проживания</b>';
+        $smsTitle = 'Проживание';
+        $extra = ['🛏 ' . e($fields['option'])];
+        $dateLine = '📅 Заезд: ' . e($fields['date']);
+    }
+
+    $lines = array_merge(
+        ["{$title} · № {$id}", '', $dateLine, "👥 Гостей: {$guests}"],
+        $extra,
+        ['👤 ' . e($name), '📞 ' . e($phone)]
+    );
+    $sms = "{$smsTitle} {$id}: {$smsWhen}, {$guests} гост. {$name}, {$phone}";
 } elseif ($type === 'order') {
     $address = str_field($data, 'address', 200);
     $paymentLabels = ['cash' => 'Наличными курьеру', 'card' => 'Картой курьеру'];

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import Logo from './Logo.jsx'
 import { ArrowRight, Cart, Phone, Telegram, Whatsapp, Max } from './Icons.jsx'
 import { contacts, navLinks } from '../data/content.js'
@@ -13,6 +13,19 @@ const Messengers = ({ className = '' }) => (
     <a href="#" className="msg" aria-label="Telegram"><Telegram /></a>
   </div>
 )
+
+// Пункт меню: отдельная страница — через роутер, раздел главной — обычной ссылкой-якорем.
+// Вне Header, чтобы ссылки не пересоздавались при каждом рендере (ломались бы анимации меню).
+function NavItem({ link, className, isHome, pathname, activeLabel, ...rest }) {
+  const isPage = link.href.startsWith('/')
+  const isActive = isPage ? pathname === link.href : link.label === activeLabel
+  const cls = `${className} ${isActive ? 'is-active' : ''}`
+  return isPage ? (
+    <Link to={link.href} className={cls} {...rest} />
+  ) : (
+    <a href={isHome ? link.href : `/${link.href}`} className={cls} {...rest} />
+  )
+}
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false)
@@ -34,7 +47,7 @@ export default function Header() {
   // подсветка пункта меню текущей секции (только на главной)
   useEffect(() => {
     if (!isHome) return
-    const ids = [...new Set(navLinks.map((l) => l.href.slice(1)))]
+    const ids = navLinks.filter((l) => l.href.startsWith('#')).map((l) => l.href.slice(1))
     const sections = ids.map((id) => document.getElementById(id)).filter(Boolean)
     const io = new IntersectionObserver(
       (entries) => {
@@ -67,6 +80,8 @@ export default function Header() {
 
   const activeLabel = isHome ? navLinks.find((l) => l.href === active)?.label : undefined
   const close = () => setMenuOpen(false)
+  const navProps = { isHome, pathname, activeLabel }
+
 
   return (
     <>
@@ -77,13 +92,9 @@ export default function Header() {
 
           <nav className="header__nav" aria-label="Основная навигация">
             {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={toSection(link.href)}
-                className={`header__link ${link.label === activeLabel ? 'is-active' : ''}`}
-              >
+              <NavItem key={link.label} link={link} className="header__link" {...navProps}>
                 {link.label}
-              </a>
+              </NavItem>
             ))}
           </nav>
 
@@ -130,16 +141,10 @@ export default function Header() {
       <div id="mobile-menu" className={`mobile-menu ${menuOpen ? 'is-open' : ''}`} inert={!menuOpen}>
         <nav className="mobile-menu__nav" aria-label="Мобильная навигация">
           {navLinks.map((link, i) => (
-            <a
-              key={link.label}
-              href={toSection(link.href)}
-              className={`mobile-menu__link ${link.label === activeLabel ? 'is-active' : ''}`}
-              style={{ '--i': i }}
-              onClick={close}
-            >
+            <NavItem key={link.label} link={link} className="mobile-menu__link" style={{ '--i': i }} onClick={close} {...navProps}>
               {link.label}
               <ArrowRight />
-            </a>
+            </NavItem>
           ))}
         </nav>
 

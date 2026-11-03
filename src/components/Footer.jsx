@@ -29,7 +29,11 @@ export default function Footer() {
           <ul className="footer__links">
             {navLinks.map((l) => (
               <li key={l.label}>
-                <a href={isHome ? l.href : `/${l.href}`}>{l.label}</a>
+                {l.href.startsWith('/') ? (
+                  <Link to={l.href}>{l.label}</Link>
+                ) : (
+                  <a href={isHome ? l.href : `/${l.href}`}>{l.label}</a>
+                )}
               </li>
             ))}
           </ul>
