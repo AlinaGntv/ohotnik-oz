@@ -1,8 +1,9 @@
 // Отправка заявок (бронь, заказ) в PHP-обработчик на хостинге, он пересылает их в Make.
-// В режиме разработки (npm run dev) PHP нет, поэтому заявка только выводится в консоль,
-// если не задан VITE_API_URL (например, VITE_API_URL=https://ohotnik-oz.ru).
-const API_URL = `${import.meta.env.VITE_API_URL ?? ''}/api/notify.php`
-const FAKE = import.meta.env.DEV && !import.meta.env.VITE_API_URL
+// В режиме разработки (npm run dev) заявки по умолчанию не отправляются, а только выводятся
+// в консоль. Чтобы слать настоящие заявки с локальной версии, добавьте в .env.local строку
+// VITE_SEND_REQUESTS=true — запросы пойдут через прокси Vite на ohotnik-oz.ru.
+const API_URL = '/api/notify.php'
+const FAKE = import.meta.env.DEV && import.meta.env.VITE_SEND_REQUESTS !== 'true'
 
 export async function sendRequest(type, data) {
   const body = { type, ...data }
