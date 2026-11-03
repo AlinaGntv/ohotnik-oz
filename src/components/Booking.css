@@ -76,8 +76,8 @@
     'date time guests'
     'comment comment comment'
     'error error error'
-    'submit submit submit'
-    'note note note';
+    'note note note'
+    'submit submit submit';
   gap: 20px;
 }
 
@@ -206,9 +206,9 @@
 }
 
 .booking__note {
-  font-size: 12px;
-  text-align: center;
-  color: rgba(243, 234, 217, 0.45);
+  margin-top: 10px;
+  text-align: left;
+  color: rgba(243, 234, 217, 0.7);
 }
 
 .booking__note a {
@@ -253,7 +253,7 @@
 @media (max-width: 560px) {
   .booking__form {
     grid-template-columns: 1fr;
-    grid-template-areas: 'name' 'phone' 'date' 'time' 'guests' 'comment' 'error' 'submit' 'note';
+    grid-template-areas: 'name' 'phone' 'date' 'time' 'guests' 'comment' 'error' 'note' 'submit';
     gap: 16px;
   }
 

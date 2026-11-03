@@ -1,10 +1,13 @@
+import { Link, useLocation } from 'react-router'
 import Logo from './Logo.jsx'
 import Reveal from './Reveal.jsx'
 import { Clock, Instagram, Phone, Pin, Telegram, Vk } from './Icons.jsx'
-import { contacts, navLinks } from '../data/content.js'
+import { company, contacts, legalLinks, navLinks } from '../data/content.js'
 import './Footer.css'
 
 export default function Footer() {
+  const isHome = useLocation().pathname === '/'
+
   return (
     <footer className="footer dark" id="contacts">
       <div className="container footer__inner">
@@ -26,7 +29,7 @@ export default function Footer() {
           <ul className="footer__links">
             {navLinks.map((l) => (
               <li key={l.label}>
-                <a href={l.href}>{l.label}</a>
+                <a href={isHome ? l.href : `/${l.href}`}>{l.label}</a>
               </li>
             ))}
           </ul>
@@ -59,11 +62,19 @@ export default function Footer() {
       </div>
 
       <div className="container footer__bottom">
-        <span>© 2026 Охотник. Все права защищены.</span>
-        <div className="footer__legal">
-          <a href="#">Политика конфиденциальности</a>
-          <a href="#">Пользовательское соглашение</a>
+        <div className="footer__company">
+          <span>© 2026 Охотник. Все права защищены.</span>
+          <span>
+            {company.shortName} · ИНН {company.inn} · ОГРН {company.ogrn}
+          </span>
         </div>
+        <nav className="footer__legal" aria-label="Документы">
+          {legalLinks.map((l) => (
+            <Link key={l.to} to={l.to}>
+              {l.label}
+            </Link>
+          ))}
+        </nav>
       </div>
     </footer>
   )

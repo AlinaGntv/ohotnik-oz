@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router'
 import Logo from './Logo.jsx'
 import { ArrowRight, Cart, Phone, Telegram, Whatsapp, Max } from './Icons.jsx'
 import { contacts, navLinks } from '../data/content.js'
@@ -18,6 +19,10 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [active, setActive] = useState('')
   const { count, open: openCart } = useCart()
+  const { pathname } = useLocation()
+  const isHome = pathname === '/'
+  // ссылки на секции главной: на других страницах ведут на /#секция
+  const toSection = (href) => (isHome ? href : `/${href}`)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -26,8 +31,9 @@ export default function Header() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // подсветка пункта меню текущей секции
+  // подсветка пункта меню текущей секции (только на главной)
   useEffect(() => {
+    if (!isHome) return
     const ids = [...new Set(navLinks.map((l) => l.href.slice(1)))]
     const sections = ids.map((id) => document.getElementById(id)).filter(Boolean)
     const io = new IntersectionObserver(
@@ -40,7 +46,7 @@ export default function Header() {
     )
     sections.forEach((s) => io.observe(s))
     return () => io.disconnect()
-  }, [])
+  }, [isHome])
 
   // блокируем прокрутку страницы под открытым меню и закрываем его по Esc
   useEffect(() => {
@@ -59,20 +65,21 @@ export default function Header() {
     return () => mq.removeEventListener('change', onChange)
   }, [])
 
-  const activeLabel = navLinks.find((l) => l.href === active)?.label
+  const activeLabel = isHome ? navLinks.find((l) => l.href === active)?.label : undefined
   const close = () => setMenuOpen(false)
 
   return (
     <>
-      <header className={`header ${scrolled ? 'header--scrolled' : ''} ${menuOpen ? 'header--open' : ''}`}>
+      {/* на внутренних страницах нет тёмного первого экрана — шапка сразу с фоном */}
+      <header className={`header ${scrolled || !isHome ? 'header--scrolled' : ''} ${menuOpen ? 'header--open' : ''}`}>
         <div className="container header__inner">
-          <Logo size={scrolled || menuOpen ? 58 : 88} />
+          <Logo size={scrolled || menuOpen || !isHome ? 58 : 88} />
 
           <nav className="header__nav" aria-label="Основная навигация">
             {navLinks.map((link) => (
               <a
                 key={link.label}
-                href={link.href}
+                href={toSection(link.href)}
                 className={`header__link ${link.label === activeLabel ? 'is-active' : ''}`}
               >
                 {link.label}
@@ -101,7 +108,7 @@ export default function Header() {
                 </span>
               )}
             </button>
-            <a href="#booking" className="btn btn--gold btn--sm header__cta">
+            <a href={toSection('#booking')} className="btn btn--gold btn--sm header__cta">
               Забронировать стол <ArrowRight />
             </a>
             <button
@@ -125,7 +132,7 @@ export default function Header() {
           {navLinks.map((link, i) => (
             <a
               key={link.label}
-              href={link.href}
+              href={toSection(link.href)}
               className={`mobile-menu__link ${link.label === activeLabel ? 'is-active' : ''}`}
               style={{ '--i': i }}
               onClick={close}
@@ -145,7 +152,7 @@ export default function Header() {
             </span>
           </a>
           <Messengers className="mobile-menu__messengers" />
-          <a href="#booking" className="btn btn--gold mobile-menu__cta" onClick={close}>
+          <a href={toSection('#booking')} className="btn btn--gold mobile-menu__cta" onClick={close}>
             Забронировать стол <ArrowRight />
           </a>
         </div>

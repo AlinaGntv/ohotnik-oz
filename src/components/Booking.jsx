@@ -5,9 +5,10 @@ import { contacts, images } from '../data/content.js'
 import useParallax from '../hooks/useParallax.js'
 import { sendRequest } from '../lib/api.js'
 import { formatPhone, isPhoneComplete } from '../lib/phone.js'
+import ConsentCheckbox from './ConsentCheckbox.jsx'
 import './Booking.css'
 
-const initial = { name: '', phone: '', date: '', time: '', guests: 2, comment: '', website: '' }
+const initial = { name: '', phone: '', date: '', time: '', guests: 2, comment: '', website: '', consent: false }
 
 // сегодняшняя дата в формате YYYY-MM-DD по местному времени — нижняя граница выбора
 const today = () => {
@@ -158,9 +159,11 @@ export default function Booking() {
               <button type="submit" className="btn btn--gold booking__submit" disabled={status === 'sending'}>
                 {status === 'sending' ? 'Отправляем…' : 'Забронировать стол'} <ArrowRight />
               </button>
-              <p className="booking__note">
-                Нажимая кнопку, вы соглашаетесь с <a href="#">политикой конфиденциальности</a>
-              </p>
+              <ConsentCheckbox
+                className="booking__note"
+                checked={form.consent}
+                onChange={(consent) => setForm((f) => ({ ...f, consent }))}
+              />
             </form>
           )}
         </Reveal>

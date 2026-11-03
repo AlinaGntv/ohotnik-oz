@@ -116,6 +116,11 @@ $hits[] = $now;
 
 // ---------- разбор заявки ----------
 
+// согласие на обработку персональных данных (152-ФЗ) обязательно
+if (($data['consent'] ?? false) !== true) {
+    fail(422, 'Отметьте согласие на обработку персональных данных');
+}
+
 $type = $data['type'] ?? '';
 $created = new DateTimeImmutable('now', new DateTimeZone(TZ));
 $id = $created->format('dmy') . '-' . strtoupper(substr(bin2hex(random_bytes(3)), 0, 4));

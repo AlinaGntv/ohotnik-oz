@@ -4,10 +4,11 @@ import { contacts, delivery } from '../data/content.js'
 import { useCart } from '../context/cart.js'
 import { sendRequest } from '../lib/api.js'
 import { formatPhone, isPhoneComplete } from '../lib/phone.js'
+import ConsentCheckbox from './ConsentCheckbox.jsx'
 import './CartDrawer.css'
 
 const money = (n) => `${n.toLocaleString('ru-RU').replace(/ /g, ' ')} ₽`
-const initialForm = { name: '', phone: '', address: '', comment: '', payment: 'card', website: '' }
+const initialForm = { name: '', phone: '', address: '', comment: '', payment: 'card', website: '', consent: false }
 
 export default function CartDrawer() {
   const { lines, count, total, setQty, clear, isOpen, close } = useCart()
@@ -238,6 +239,11 @@ export default function CartDrawer() {
                   </a>
                 </p>
               )}
+              <ConsentCheckbox
+                className="cart__note"
+                checked={form.consent}
+                onChange={(consent) => setForm((f) => ({ ...f, consent }))}
+              />
               <div className="cart__total">
                 <span>К оплате</span>
                 <strong>{money(total)}</strong>
@@ -245,9 +251,6 @@ export default function CartDrawer() {
               <button type="submit" className="btn btn--gold cart__cta" disabled={sending}>
                 {sending ? 'Отправляем…' : 'Подтвердить заказ'} <ArrowRight />
               </button>
-              <p className="cart__note">
-                Нажимая кнопку, вы соглашаетесь с <a href="#">политикой конфиденциальности</a>
-              </p>
             </footer>
           </form>
         )}

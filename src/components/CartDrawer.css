@@ -211,9 +211,8 @@
 }
 
 .cart__note {
-  margin-top: 10px;
-  font-size: 12px;
-  text-align: center;
+  margin-bottom: 16px;
+  text-align: left;
   color: var(--c-text-muted);
 }
 

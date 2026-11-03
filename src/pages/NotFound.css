@@ -1,0 +1,28 @@
+.not-found {
+  display: flex;
+  align-items: center;
+  min-height: 80svh;
+  padding: calc(120px + env(safe-area-inset-top)) 0 80px;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(201, 154, 82, 0.12), transparent 60%),
+    var(--c-dark);
+}
+
+.not-found__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+}
+
+.not-found__code {
+  font-family: var(--font-serif);
+  font-size: clamp(96px, 16vw, 180px);
+  line-height: 1;
+  color: var(--c-gold-light);
+}
+
+.not-found .btn {
+  margin-top: 12px;
+}

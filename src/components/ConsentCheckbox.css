@@ -1,0 +1,60 @@
+.consent {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.consent input {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  opacity: 0;
+}
+
+.consent__box {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border: 1.5px solid currentColor;
+  border-radius: 5px;
+  opacity: 0.6;
+  transition: background 0.2s, border-color 0.2s, opacity 0.2s;
+}
+
+.consent__box svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.4;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.2s, transform 0.3s var(--ease);
+}
+
+.consent input:checked + .consent__box {
+  border-color: var(--c-gold);
+  background: var(--c-gold);
+  color: #2b1d0b;
+  opacity: 1;
+}
+
+.consent input:checked + .consent__box svg {
+  opacity: 1;
+  transform: none;
+}
+
+.consent input:focus-visible + .consent__box {
+  outline: 2px solid var(--c-gold);
+  outline-offset: 2px;
+}
+
+.consent__text a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

@@ -136,9 +136,18 @@
   color: rgba(243, 234, 217, 0.45);
 }
 
+.footer__company {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .footer__legal {
   display: flex;
-  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px 28px;
+  max-width: 640px;
 }
 
 .footer__legal a {
