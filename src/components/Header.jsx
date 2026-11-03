@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Logo from './Logo.jsx'
 import { ArrowRight, Cart, Phone, Telegram, Whatsapp, Max } from './Icons.jsx'
 import { contacts, navLinks } from '../data/content.js'
-import { useCart } from '../context/CartContext.jsx'
+import { useCart } from '../context/cart.js'
 import './Header.css'
 
 const Messengers = ({ className = '' }) => (

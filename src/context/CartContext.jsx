@@ -1,7 +1,7 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { dishes, isPromoActive, promoPrice } from '../data/content.js'
+import { CartContext } from './cart.js'
 
-const CartContext = createContext(null)
 const STORAGE_KEY = 'ohotnik-cart'
 
 const loadItems = () => {
@@ -62,5 +62,3 @@ export function CartProvider({ children }) {
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }
-
-export const useCart = () => useContext(CartContext)

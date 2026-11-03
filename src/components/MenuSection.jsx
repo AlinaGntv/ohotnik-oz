@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Reveal from './Reveal.jsx'
 import { ArrowLeft, ArrowRight, Cart } from './Icons.jsx'
 import { dishes, isPromoActive, menuCategories, promo, promoPrice } from '../data/content.js'
-import { useCart } from '../context/CartContext.jsx'
+import { useCart } from '../context/cart.js'
 import useSlider from '../hooks/useSlider.js'
 import './MenuSection.css'
 

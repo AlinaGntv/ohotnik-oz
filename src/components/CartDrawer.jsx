@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ArrowLeft, ArrowRight, Cart, Phone } from './Icons.jsx'
 import { contacts, delivery } from '../data/content.js'
-import { useCart } from '../context/CartContext.jsx'
+import { useCart } from '../context/cart.js'
 import { sendRequest } from '../lib/api.js'
 import { formatPhone, isPhoneComplete } from '../lib/phone.js'
 import './CartDrawer.css'
