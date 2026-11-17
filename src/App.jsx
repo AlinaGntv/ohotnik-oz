@@ -16,11 +16,13 @@ import BanquetsPage from './pages/BanquetsPage.jsx'
 import StayPage from './pages/StayPage.jsx'
 import ContactsPage from './pages/ContactsPage.jsx'
 import { ordersEnabled } from './data/content.js'
+import RouteSeo from './components/RouteSeo.jsx'
 
 export default function App() {
   return (
     <CartProvider>
       <ScrollManager />
+      <RouteSeo />
       <Header />
       <main>
         <Routes>

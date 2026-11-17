@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Link, useLocation } from 'react-router'
 import { ArrowLeft } from '../../components/Icons.jsx'
 import { legalLinks, legalUpdated } from '../../data/content.js'
@@ -7,13 +6,6 @@ import './LegalPage.css'
 // Общий макет юридических страниц: заголовок, дата редакции, текст и ссылки на другие документы.
 export default function LegalPage({ eyebrow = 'Документы', title, children, showDate = true }) {
   const { pathname } = useLocation()
-
-  useEffect(() => {
-    document.title = `${title} — Охотник`
-    return () => {
-      document.title = 'Охотник — ресторан с историей'
-    }
-  }, [title])
 
   return (
     <article className="legal">
