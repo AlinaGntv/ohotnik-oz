@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { ArrowRight } from './Icons.jsx'
+import { useId, useState } from 'react'
+import { ArrowRight, Phone } from './Icons.jsx'
 import ConsentCheckbox from './ConsentCheckbox.jsx'
+import LeadSelect from './LeadSelect.jsx'
 import { sendRequest } from '../lib/api.js'
 import { formatPhone, isPhoneComplete } from '../lib/phone.js'
 import './LeadForm.css'
@@ -13,7 +14,8 @@ const today = () => {
 // Форма заявки для внутренних страниц (банкет, проживание).
 // fields: [{ name, label, type: 'text' | 'date' | 'number' | 'select', options?, required?, placeholder?, wide? }]
 // Заявка уходит как бронь (type: 'booking') с полем kind — в Make она попадает в ветку «Бронь».
-export default function LeadForm({ id, kind, title, lead, fields, submitLabel }) {
+export default function LeadForm({ id, kind, title, lead, fields, submitLabel, contactPhone }) {
+  const formId = useId()
   const initial = () => ({
     name: '',
     phone: '',
@@ -31,6 +33,11 @@ export default function LeadForm({ id, kind, title, lead, fields, submitLabel })
 
   const submit = async (e) => {
     e.preventDefault()
+    const missingSelect = fields.find((field) => field.type === 'select' && field.required && !form[field.name])
+    if (missingSelect) {
+      setError(`Выберите вариант в поле «${missingSelect.label}»`)
+      return
+    }
     if (!isPhoneComplete(form.phone)) {
       setError('Введите номер телефона полностью')
       return
@@ -57,6 +64,14 @@ export default function LeadForm({ id, kind, title, lead, fields, submitLabel })
           <span className="eyebrow">Заявка</span>
           <h2 className="section-title">{title}</h2>
           {lead && <p className="lead">{lead}</p>}
+          {contactPhone && (
+            <div className="lead-form__callout">
+              <span>Бронирование по телефону</span>
+              <a href={contactPhone.href}>
+                <Phone /> {contactPhone.label}
+              </a>
+            </div>
+          )}
         </div>
 
         <div className="lead-form__panel">
@@ -71,13 +86,14 @@ export default function LeadForm({ id, kind, title, lead, fields, submitLabel })
             </div>
           ) : (
             <form className="lead-form__form" onSubmit={submit}>
-              <label className="lead-field">
-                <span>Ваше имя</span>
-                <input required maxLength={80} autoComplete="name" value={form.name} onChange={set('name')} />
-              </label>
-              <label className="lead-field">
-                <span>Телефон</span>
+              <div className="lead-field">
+                <label htmlFor={`${formId}-name`}>Ваше имя</label>
+                <input id={`${formId}-name`} required maxLength={80} autoComplete="name" value={form.name} onChange={set('name')} />
+              </div>
+              <div className="lead-field">
+                <label htmlFor={`${formId}-phone`}>Телефон</label>
                 <input
+                  id={`${formId}-phone`}
                   required
                   type="tel"
                   inputMode="tel"
@@ -86,22 +102,23 @@ export default function LeadForm({ id, kind, title, lead, fields, submitLabel })
                   value={form.phone}
                   onChange={(e) => setForm((f) => ({ ...f, phone: formatPhone(e.target.value) }))}
                 />
-              </label>
+              </div>
 
               {fields.map((f) => (
-                <label key={f.name} className={`lead-field ${f.wide ? 'lead-field--wide' : ''}`}>
-                  <span>{f.label}</span>
+                <div key={f.name} className={`lead-field ${f.wide ? 'lead-field--wide' : ''}`}>
+                  <span id={`${formId}-${f.name}`}>{f.label}</span>
                   {f.type === 'select' ? (
-                    <select required={f.required} value={form[f.name]} onChange={set(f.name)}>
-                      <option value="">{f.placeholder ?? 'Выберите'}</option>
-                      {f.options.map((o) => (
-                        <option key={o} value={o}>
-                          {o}
-                        </option>
-                      ))}
-                    </select>
+                    <LeadSelect
+                      labelId={`${formId}-${f.name}`}
+                      value={form[f.name]}
+                      options={f.options}
+                      placeholder={f.placeholder ?? 'Выберите'}
+                      required={f.required}
+                      onChange={(value) => setForm((current) => ({ ...current, [f.name]: value }))}
+                    />
                   ) : (
                     <input
+                      id={`${formId}-${f.name}`}
                       type={f.type}
                       required={f.required}
                       min={f.type === 'date' ? today() : f.min}
@@ -111,13 +128,13 @@ export default function LeadForm({ id, kind, title, lead, fields, submitLabel })
                       onChange={set(f.name)}
                     />
                   )}
-                </label>
+                </div>
               ))}
 
-              <label className="lead-field lead-field--wide">
-                <span>Комментарий (необязательно)</span>
-                <textarea rows={3} maxLength={500} value={form.comment} onChange={set('comment')} />
-              </label>
+              <div className="lead-field lead-field--wide">
+                <label htmlFor={`${formId}-comment`}>Комментарий (необязательно)</label>
+                <textarea id={`${formId}-comment`} rows={3} maxLength={500} value={form.comment} onChange={set('comment')} />
+              </div>
 
               <input
                 className="lead-form__trap"

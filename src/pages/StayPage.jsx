@@ -26,6 +26,7 @@ export default function StayPage() {
         title="Бронь домика или номера"
         lead="Укажите, что хотите забронировать, дату и количество гостей — администратор перезвонит и подтвердит бронь."
         submitLabel="Забронировать"
+        contactPhone={{ label: '+7 (915) 144-99-01', href: 'tel:+79151449901' }}
         fields={[
           {
             name: 'option',
