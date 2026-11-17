@@ -142,6 +142,17 @@
   gap: 4px;
 }
 
+.footer__credit {
+  width: fit-content;
+  margin-top: 8px;
+  color: rgba(226, 189, 126, 0.72);
+  transition: color 0.3s;
+}
+
+.footer__credit:hover {
+  color: var(--c-gold-light);
+}
+
 .footer__legal {
   display: flex;
   flex-wrap: wrap;

@@ -71,6 +71,9 @@ export default function Footer() {
           <span>
             {company.shortName} · ИНН {company.inn} · ОГРН {company.ogrn}
           </span>
+          <a className="footer__credit" href="https://chadmetrix.ru/" target="_blank" rel="noopener noreferrer">
+            Разработано в AVE
+          </a>
         </div>
         <nav className="footer__legal" aria-label="Документы">
           {legalLinks.map((l) => (
