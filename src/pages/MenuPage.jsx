@@ -2,19 +2,16 @@ import { useEffect, useMemo, useState } from 'react'
 import PageHero from '../components/PageHero.jsx'
 import DishCard from '../components/DishCard.jsx'
 import Gallery from '../components/Gallery.jsx'
-import { Cart } from '../components/Icons.jsx'
-import { delivery, dishes, isPromoActive, menuCategories, promo } from '../data/content.js'
+import { dishes, menuCategories } from '../data/content.js'
 import { useCart } from '../context/cart.js'
+import { ordersEnabled } from '../data/content.js'
 import './MenuPage.css'
 
 const slug = (c) => `cat-${menuCategories.indexOf(c)}`
-const money = (n) => `${n.toLocaleString('ru-RU').replace(/ /g, ' ')} ₽`
-
 export default function MenuPage() {
   const [query, setQuery] = useState('')
   const [active, setActive] = useState(menuCategories[0])
   const { count, total, open } = useCart()
-  const promoActive = isPromoActive()
 
   const groups = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -38,12 +35,12 @@ export default function MenuPage() {
   return (
     <>
       <PageHero
-        eyebrow="Меню и доставка"
+        eyebrow="Меню ресторана"
         title="Меню ресторана"
-        lead={`Блюда на углях, горячее, закуски и салаты с доставкой по Орехово-Зуеву. Бесплатная доставка от ${money(delivery.freeFrom)}.`}
+        lead="Блюда на углях, горячее, закуски, салаты и десерты ресторана «Охотник»."
         image="/images/menu/pivnaya-tarelka.webp"
       >
-        {promoActive && <span className="menu-page__promo">−{promo.discount}% на всё меню при заказе доставки</span>}
+        {!ordersEnabled && <span className="menu-page__promo">Заказы доставки временно не принимаются</span>}
       </PageHero>
 
       <Gallery />
@@ -89,7 +86,7 @@ export default function MenuPage() {
         </div>
       </section>
 
-      {count > 0 && (
+      {ordersEnabled && count > 0 && (
         <button className="menu-page__cart" onClick={open}>
           <Cart />
           <span>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { dishes, isPromoActive, promoPrice } from '../data/content.js'
+import { dishes, isPromoActive, ordersEnabled, promoPrice } from '../data/content.js'
 import { CartContext } from './cart.js'
 
 const STORAGE_KEY = 'ohotnik-cart'
@@ -16,11 +16,15 @@ const loadItems = () => {
 
 export function CartProvider({ children }) {
   // { [dishId]: quantity }
-  const [items, setItems] = useState(loadItems)
+  const [items, setItems] = useState(ordersEnabled ? loadItems : () => ({}))
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
     try {
+      if (!ordersEnabled) {
+        localStorage.removeItem(STORAGE_KEY)
+        return
+      }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
     } catch {
       // приватный режим или запрет хранилища — корзина просто не запомнится

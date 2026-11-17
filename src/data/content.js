@@ -28,28 +28,25 @@ export const contacts = {
 export const company = {
   fullName: 'Общество с ограниченной ответственностью «Радуга+»',
   shortName: 'ООО «Радуга+»',
-  inn: '[ИНН]',
-  kpp: '[КПП]',
-  ogrn: '[ОГРН]',
-  legalAddress: '[Юридический адрес]',
-  actualAddress: 'Московская обл., г. Орехово-Зуево, лесопарк «Мельница»',
-  director: '[ФИО генерального директора]',
-  email: '[email для обращений]',
-  bank: {
-    name: '[Банк]',
-    account: '[Расчётный счёт]',
-    corrAccount: '[Корр. счёт]',
-    bik: '[БИК]',
-  },
+  inn: '5034026479',
+  kpp: '503401001',
+  ogrn: '1065034028146',
+  legalAddress: '142600, Московская область, г. Орехово-Зуево, ул. Лесопарк Мельница, д. 1',
+  actualAddress: 'Московская область, г. Орехово-Зуево, ул. Лесопарк Мельница, д. 1',
+  director: 'Пурясев Роман Анатольевич',
+  email: 'Ohotnikhool21@mail.ru',
+  contactPhone: '+7 926 559-38-23',
+  contactPhoneHref: 'tel:+79265593823',
 }
 
 // Дата текущей редакции юридических документов
-export const legalUpdated = '3 ноября 2026 г.'
+export const legalUpdated = '17 ноября 2026 г.'
 
 export const legalLinks = [
   { to: '/privacy', label: 'Политика обработки персональных данных' },
   { to: '/consent', label: 'Согласие на обработку персональных данных' },
-  { to: '/offer', label: 'Условия заказа и доставки' },
+  { to: '/offer', label: 'Информация о заказах доставки' },
+  { to: '/booking-terms', label: 'Условия бронирования' },
   { to: '/requisites', label: 'Реквизиты' },
 ]
 
@@ -61,17 +58,20 @@ export const delivery = {
   ],
 }
 
+// Заказы доставки временно отключены; после их возобновления включить корзину и форму заказа.
+export const ordersEnabled = false
+
 // Акция на доставку. startsAt/endsAt — даты в формате 'ГГГГ-ММ-ДД' или null (без ограничения).
 // Например, чтобы запустить со 2-й недели: startsAt: '2026-11-09'.
 export const promo = {
   discount: 10,
   title: 'Скидка 10% на всё меню',
-  startsAt: '2026-11-04',
-  endsAt: null,
+  startsAt: '2026-11-17',
+  endsAt: '2026-11-30',
 }
 
 export const isPromoActive = (now = new Date()) => {
-  if (!promo.discount) return false
+  if (!ordersEnabled || !promo.discount) return false
   if (promo.startsAt && now < new Date(`${promo.startsAt}T00:00:00`)) return false
   if (promo.endsAt && now > new Date(`${promo.endsAt}T23:59:59`)) return false
   return true

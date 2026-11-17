@@ -1,5 +1,5 @@
 import LegalPage from './LegalPage.jsx'
-import { company, contacts } from '../../data/content.js'
+import { company } from '../../data/content.js'
 
 export default function Requisites() {
   const rows = [
@@ -11,11 +11,7 @@ export default function Requisites() {
     ['Юридический адрес', company.legalAddress],
     ['Адрес ресторана', company.actualAddress],
     ['Генеральный директор', company.director],
-    ['Банк', company.bank.name],
-    ['Расчётный счёт', company.bank.account],
-    ['Корреспондентский счёт', company.bank.corrAccount],
-    ['БИК', company.bank.bik],
-    ['Телефон', contacts.phone],
+    ['Телефон для обращений', company.contactPhone],
     ['Электронная почта', company.email],
   ]
 

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Cart } from './Icons.jsx'
-import { promo, promoPrice } from '../data/content.js'
+import { ordersEnabled, promo, promoPrice } from '../data/content.js'
 import { useCart } from '../context/cart.js'
 import './MenuSection.css'
 
@@ -35,7 +35,7 @@ export default function DishCard({ dish, promoActive }) {
           ) : (
             <span className="dish__price">{dish.price} ₽</span>
           )}
-          {priceKnown && (
+          {ordersEnabled && priceKnown && (
             <>
               <div className="qty">
                 <button aria-label="Уменьшить" onClick={() => setQty((q) => Math.max(1, q - 1))}>

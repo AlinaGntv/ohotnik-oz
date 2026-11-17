@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import Logo from './Logo.jsx'
 import { ArrowRight, Cart, Phone, Telegram, Whatsapp, Max } from './Icons.jsx'
-import { contacts, navLinks } from '../data/content.js'
+import { contacts, navLinks, ordersEnabled } from '../data/content.js'
 import { useCart } from '../context/cart.js'
 import './Header.css'
 
@@ -104,7 +104,7 @@ export default function Header() {
               <span>{contacts.phone}</span>
             </a>
             <Messengers className="header__messengers" />
-            <button
+            {ordersEnabled && <button
               className="header__cart"
               aria-label={count ? `Корзина, блюд: ${count}` : 'Корзина'}
               onClick={() => {
@@ -118,7 +118,7 @@ export default function Header() {
                   {count}
                 </span>
               )}
-            </button>
+            </button>}
             <a href={toSection('#booking')} className="btn btn--gold btn--sm header__cta">
               Забронировать стол <ArrowRight />
             </a>

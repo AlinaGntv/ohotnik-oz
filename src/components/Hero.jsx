@@ -31,7 +31,7 @@ export default function Hero() {
         </p>
         <div className="hero__buttons hero__anim" style={{ '--i': 4 }}>
           <a href="#menu" className="btn btn--gold">
-            Заказать доставку <ArrowRight />
+            Посмотреть меню <ArrowRight />
           </a>
           <a href="#booking" className="btn btn--outline">
             Забронировать стол
@@ -50,7 +50,7 @@ export default function Hero() {
         </div>
         <div className="hero__info">
           <Truck />
-          <span>Доставка по Орехово-Зуеву</span>
+          <span>Заказы доставки временно недоступны</span>
         </div>
         <a href="#features" className="hero__scroll">
           Листайте вниз

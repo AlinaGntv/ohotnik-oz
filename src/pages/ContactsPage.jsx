@@ -1,8 +1,7 @@
-import { Link } from 'react-router'
 import PageHero from '../components/PageHero.jsx'
 import Reveal from '../components/Reveal.jsx'
 import { ArrowRight, Car, Clock, Instagram, Phone, Pin, Telegram, Truck, Vk } from '../components/Icons.jsx'
-import { company, contacts, delivery, images } from '../data/content.js'
+import { company, contacts, images, ordersEnabled } from '../data/content.js'
 import './ContactsPage.css'
 
 const routeUrl = `https://yandex.ru/maps/?text=${encodeURIComponent(contacts.mapQuery)}`
@@ -44,14 +43,14 @@ export default function ContactsPage() {
                   {contacts.phone}
                 </a>
               </p>
-              <p className="contact-card__muted">Бронирование столов, банкеты, проживание и доставка</p>
+              <p className="contact-card__muted">Бронирование столов, банкеты и проживание</p>
             </Reveal>
             <Reveal className="contact-card" delay={160}>
               <Clock />
               <h2>Режим работы</h2>
               <p>Ресторан: {contacts.hours.toLowerCase()}</p>
               <p className="contact-card__muted">
-                Доставка: {delivery.schedule.map((s) => `${s.days} ${s.time}`).join(', ')}
+                {ordersEnabled ? 'Заказы доставки принимаются через сайт.' : 'Заказы доставки временно не принимаются.'}
               </p>
             </Reveal>
             <Reveal className="contact-card" delay={240}>
@@ -62,14 +61,12 @@ export default function ContactsPage() {
                 В приложении такси или навигаторе найдите «Ресторан Охотник» в Орехово-Зуеве.
               </p>
             </Reveal>
-            <Reveal className="contact-card" delay={320}>
+            {!ordersEnabled && <Reveal className="contact-card" delay={320}>
               <Truck />
               <h2>Доставка</h2>
-              <p>По Орехово-Зуеву, бесплатно от {delivery.freeFrom.toLocaleString('ru-RU')} ₽.</p>
-              <Link to="/menu">
-                Заказать из меню <ArrowRight />
-              </Link>
-            </Reveal>
+              <p>Заказы доставки временно не принимаются.</p>
+              <p className="contact-card__muted">Меню доступно для просмотра на сайте.</p>
+            </Reveal>}
             <Reveal className="contact-card" delay={400}>
               <h2>Мы в соцсетях</h2>
               <p className="contact-card__muted">Почта для обращений: {company.email}</p>

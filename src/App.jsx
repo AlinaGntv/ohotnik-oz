@@ -9,11 +9,13 @@ import Privacy from './pages/legal/Privacy.jsx'
 import Consent from './pages/legal/Consent.jsx'
 import Offer from './pages/legal/Offer.jsx'
 import Requisites from './pages/legal/Requisites.jsx'
+import BookingTerms from './pages/legal/BookingTerms.jsx'
 import NotFound from './pages/NotFound.jsx'
 import MenuPage from './pages/MenuPage.jsx'
 import BanquetsPage from './pages/BanquetsPage.jsx'
 import StayPage from './pages/StayPage.jsx'
 import ContactsPage from './pages/ContactsPage.jsx'
+import { ordersEnabled } from './data/content.js'
 
 export default function App() {
   return (
@@ -31,11 +33,12 @@ export default function App() {
           <Route path="/consent" element={<Consent />} />
           <Route path="/offer" element={<Offer />} />
           <Route path="/requisites" element={<Requisites />} />
+          <Route path="/booking-terms" element={<BookingTerms />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />
-      <CartDrawer />
+      {ordersEnabled && <CartDrawer />}
     </CartProvider>
   )
 }
