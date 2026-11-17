@@ -199,8 +199,7 @@ export default function CartDrawer() {
               <fieldset className="cart__payment">
                 <legend>Оплата</legend>
                 {[
-                  ['card', 'Картой курьеру'],
-                  ['cash', 'Наличными курьеру'],
+                  ['card', 'Картой через терминал курьера'],
                 ].map(([value, label]) => (
                   <label key={value} className={form.payment === value ? 'is-active' : ''}>
                     <input

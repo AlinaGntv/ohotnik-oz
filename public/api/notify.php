@@ -93,11 +93,6 @@ if (!empty($data['website'])) {
     respond(200, ['ok' => true, 'id' => '0']);
 }
 
-// Заказы доставки временно отключены; заявки на бронирование по-прежнему принимаются.
-if (($data['type'] ?? '') === 'order') {
-    fail(410, 'Заказы доставки временно не принимаются.');
-}
-
 // ограничение частоты по IP
 // Jino проксирует запросы через nginx: настоящий IP — в X-Real-IP или последним в
 // X-Forwarded-For (первые значения в нём клиент может подставить сам)
@@ -189,7 +184,7 @@ if ($type === 'booking') {
     $sms = "{$smsTitle} {$id}: {$smsWhen}, {$guests} гост. {$name}, {$phone}";
 } elseif ($type === 'order') {
     $address = str_field($data, 'address', 200);
-    $paymentLabels = ['cash' => 'Наличными курьеру', 'card' => 'Картой курьеру'];
+    $paymentLabels = ['card' => 'Картой через терминал курьера'];
     $payment = $paymentLabels[$data['payment'] ?? ''] ?? null;
     if (!$payment) {
         fail(422, 'Выберите способ оплаты');
@@ -228,8 +223,7 @@ if ($type === 'booking') {
     $lines[] = '👤 ' . e($name);
     $lines[] = '📞 ' . e($phone);
     $lines[] = '📍 ' . e($address);
-    $paymentShort = ($data['payment'] ?? '') === 'cash' ? 'наличными' : 'картой';
-    $sms = "Заказ {$id}: " . money($total) . ", {$paymentShort}. {$name}, {$phone}, " . mb_substr($address, 0, 60);
+    $sms = "Заказ {$id}: " . money($total) . ", картой через терминал. {$name}, {$phone}, " . mb_substr($address, 0, 60);
 } else {
     fail(400, 'Неизвестный тип заявки');
 }

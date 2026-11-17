@@ -1,7 +1,8 @@
 import PageHero from '../components/PageHero.jsx'
 import Reveal from '../components/Reveal.jsx'
 import { ArrowRight, Car, Clock, Instagram, Phone, Pin, Telegram, Truck, Vk } from '../components/Icons.jsx'
-import { company, contacts, images, ordersEnabled } from '../data/content.js'
+import { Link } from 'react-router'
+import { company, contacts, delivery, images, ordersEnabled } from '../data/content.js'
 import './ContactsPage.css'
 
 const routeUrl = `https://yandex.ru/maps/?text=${encodeURIComponent(contacts.mapQuery)}`
@@ -50,7 +51,9 @@ export default function ContactsPage() {
               <h2>Режим работы</h2>
               <p>Ресторан: {contacts.hours.toLowerCase()}</p>
               <p className="contact-card__muted">
-                {ordersEnabled ? 'Заказы доставки принимаются через сайт.' : 'Заказы доставки временно не принимаются.'}
+                {ordersEnabled
+                  ? `Доставка: ${delivery.schedule.map((s) => `${s.days} ${s.time}`).join(', ')}`
+                  : 'Заказы доставки временно не принимаются.'}
               </p>
             </Reveal>
             <Reveal className="contact-card" delay={240}>
@@ -61,7 +64,12 @@ export default function ContactsPage() {
                 В приложении такси или навигаторе найдите «Ресторан Охотник» в Орехово-Зуеве.
               </p>
             </Reveal>
-            {!ordersEnabled && <Reveal className="contact-card" delay={320}>
+            {ordersEnabled ? <Reveal className="contact-card" delay={320}>
+              <Truck />
+              <h2>Доставка</h2>
+              <p>По Орехово-Зуеву, бесплатно от {delivery.freeFrom.toLocaleString('ru-RU')} ₽.</p>
+              <Link to="/menu">Заказать из меню <ArrowRight /></Link>
+            </Reveal> : <Reveal className="contact-card" delay={320}>
               <Truck />
               <h2>Доставка</h2>
               <p>Заказы доставки временно не принимаются.</p>

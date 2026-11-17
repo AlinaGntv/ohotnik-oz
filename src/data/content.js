@@ -24,7 +24,6 @@ export const contacts = {
 }
 
 // Реквизиты организации для юридических страниц и подвала.
-// Значения в квадратных скобках — заполнить перед публикацией (данные из выписки ЕГРЮЛ).
 export const company = {
   fullName: 'Общество с ограниченной ответственностью «Радуга+»',
   shortName: 'ООО «Радуга+»',
@@ -45,7 +44,7 @@ export const legalUpdated = '17 ноября 2026 г.'
 export const legalLinks = [
   { to: '/privacy', label: 'Политика обработки персональных данных' },
   { to: '/consent', label: 'Согласие на обработку персональных данных' },
-  { to: '/offer', label: 'Информация о заказах доставки' },
+  { to: '/offer', label: 'Условия заказа и доставки' },
   { to: '/booking-terms', label: 'Условия бронирования' },
   { to: '/requisites', label: 'Реквизиты' },
 ]
@@ -54,15 +53,13 @@ export const delivery = {
   freeFrom: 1000,
   schedule: [
     { days: 'Пн–Чт', time: '12:00 – 22:00' },
-    { days: 'Пт–Сб', time: '11:00 – 00:00' },
+    { days: 'Пт–Вс', time: '10:00 – 02:00 следующего дня' },
   ],
 }
 
-// Заказы доставки временно отключены; после их возобновления включить корзину и форму заказа.
-export const ordersEnabled = false
+export const ordersEnabled = true
 
 // Акция на доставку. startsAt/endsAt — даты в формате 'ГГГГ-ММ-ДД' или null (без ограничения).
-// Например, чтобы запустить со 2-й недели: startsAt: '2026-11-09'.
 export const promo = {
   discount: 10,
   title: 'Скидка 10% на всё меню',
@@ -71,7 +68,7 @@ export const promo = {
 }
 
 export const isPromoActive = (now = new Date()) => {
-  if (!ordersEnabled || !promo.discount) return false
+  if (!promo.discount) return false
   if (promo.startsAt && now < new Date(`${promo.startsAt}T00:00:00`)) return false
   if (promo.endsAt && now > new Date(`${promo.endsAt}T23:59:59`)) return false
   return true

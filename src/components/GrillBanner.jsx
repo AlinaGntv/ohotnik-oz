@@ -38,7 +38,7 @@ export default function GrillBanner() {
           </Reveal>
           <Reveal delay={300}>
             <a href="#menu" className="btn btn--gold">
-              Посмотреть меню <ArrowRight />
+              Заказать с мангала <ArrowRight />
             </a>
           </Reveal>
         </div>
