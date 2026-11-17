@@ -105,17 +105,17 @@ export const dishes = [
   { id: 202, category: 'Горячее', name: 'Шаурма с курицей', weight: '350 г', price: 350, image: dish('shaurma-kurica') },
   { id: 203, category: 'Горячее', name: 'Шаурма с говядиной', weight: '350 г', price: 390, image: dish('shaurma-govyadina') },
 
-  { id: 701, category: 'Пицца', name: 'Пицца с сыром и зеленью', weight: null, price: null, image: '/images/gallery/food-01.webp' },
-  { id: 702, category: 'Пицца', name: 'Пицца с мясной начинкой', weight: null, price: null, image: '/images/gallery/food-07.webp' },
-  { id: 703, category: 'Пицца', name: 'Сырная пицца', weight: null, price: null, image: '/images/gallery/food-13.webp' },
-  { id: 704, category: 'Пицца', name: 'Пицца с колбасками и луком', weight: null, price: null, image: '/images/gallery/food-15.webp' },
-  { id: 705, category: 'Пицца', name: 'Пицца с пепперони', weight: null, price: null, image: '/images/gallery/food-16.webp' },
+  { id: 701, category: 'Пицца', name: 'Пицца с сыром и зеленью', weight: null, price: 540, image: '/images/gallery/food-01.webp' },
+  { id: 702, category: 'Пицца', name: 'Пицца с мясной начинкой', weight: null, price: 500, image: '/images/gallery/food-07.webp' },
+  { id: 703, category: 'Пицца', name: 'Сырная пицца', weight: null, price: 540, image: '/images/gallery/food-13.webp' },
+  { id: 704, category: 'Пицца', name: 'Пицца с колбасками и луком', weight: null, price: 500, image: '/images/gallery/food-15.webp' },
+  { id: 705, category: 'Пицца', name: 'Пицца с пепперони', weight: null, price: 500, image: '/images/gallery/food-16.webp' },
 
-  { id: 711, category: 'Паста', name: 'Паста с креветками', weight: null, price: null, image: '/images/gallery/food-02.webp' },
-  { id: 712, category: 'Паста', name: 'Паста в сливочном соусе', weight: null, price: null, image: '/images/gallery/food-03.webp' },
-  { id: 713, category: 'Паста', name: 'Паста с томатами', weight: null, price: null, image: '/images/gallery/food-04.webp' },
-  { id: 714, category: 'Паста', name: 'Спагетти в сливочном соусе', weight: null, price: null, image: '/images/gallery/food-05.webp' },
-  { id: 715, category: 'Паста', name: 'Паста с курицей', weight: null, price: null, image: '/images/gallery/food-09.webp' },
+  { id: 711, category: 'Паста', name: 'Паста с креветками', weight: null, price: 590, image: '/images/gallery/food-02.webp' },
+  { id: 712, category: 'Паста', name: 'Паста в сливочном соусе', weight: null, price: 540, image: '/images/gallery/food-03.webp' },
+  { id: 713, category: 'Паста', name: 'Паста с томатами', weight: null, price: 490, image: '/images/gallery/food-04.webp' },
+  { id: 714, category: 'Паста', name: 'Спагетти в сливочном соусе', weight: null, price: 550, image: '/images/gallery/food-05.webp' },
+  { id: 715, category: 'Паста', name: 'Паста с курицей', weight: null, price: 590, image: '/images/gallery/food-09.webp' },
 
   { id: 301, category: 'Закуски', name: 'Пивная тарелка', weight: '800 г', price: 1290, image: dish('pivnaya-tarelka') },
   { id: 302, category: 'Закуски', name: 'Сырные палочки с брусничным соусом', weight: '200 г', price: 390, image: dish('syrnye-palochki') },
@@ -133,13 +133,13 @@ export const dishes = [
   { id: 601, category: 'Гарниры', name: 'Картофель фри с сырным соусом', weight: '150 г', price: 220, image: dish('kartofel-fri') },
   { id: 602, category: 'Гарниры', name: 'Картофель по-деревенски с сырным соусом', weight: '200 г', price: 240, image: dish('kartofel-po-derevenski') },
 
-  { id: 721, category: 'Десерты', name: 'Чизкейк', weight: null, price: null, image: '/images/gallery/food-06.webp' },
-  { id: 722, category: 'Десерты', name: 'Ассорти десертов с мороженым', weight: null, price: null, image: '/images/gallery/food-08.webp' },
-  { id: 723, category: 'Десерты', name: 'Десерт с мороженым', weight: null, price: null, image: '/images/gallery/food-10.webp' },
-  { id: 724, category: 'Десерты', name: 'Шоколадный десерт', weight: null, price: null, image: '/images/gallery/food-11.webp' },
-  { id: 725, category: 'Десерты', name: 'Фисташковый чизкейк', weight: null, price: null, image: '/images/gallery/food-12.webp' },
-  { id: 726, category: 'Десерты', name: 'Чизкейк с ягодным соусом', weight: null, price: null, image: '/images/gallery/food-14.webp' },
-  { id: 727, category: 'Десерты', name: 'Чизкейк с фруктовым соусом', weight: null, price: null, image: '/images/gallery/food-17.webp' },
+  { id: 721, category: 'Десерты', name: 'Чизкейк', weight: null, price: 350, image: '/images/gallery/food-06.webp' },
+  { id: 722, category: 'Десерты', name: 'Ассорти десертов с мороженым', weight: null, price: 550, image: '/images/gallery/food-08.webp' },
+  { id: 723, category: 'Десерты', name: 'Десерт с мороженым', weight: null, price: 450, image: '/images/gallery/food-10.webp' },
+  { id: 724, category: 'Десерты', name: 'Шоколадный десерт', weight: null, price: 390, image: '/images/gallery/food-11.webp' },
+  { id: 725, category: 'Десерты', name: 'Фисташковый чизкейк', weight: null, price: 450, image: '/images/gallery/food-12.webp' },
+  { id: 726, category: 'Десерты', name: 'Чизкейк с ягодным соусом', weight: null, price: 420, image: '/images/gallery/food-14.webp' },
+  { id: 727, category: 'Десерты', name: 'Чизкейк с фруктовым соусом', weight: null, price: 420, image: '/images/gallery/food-17.webp' },
 ]
 
 // Ссылки на карточки в VK-маркете ресторана
