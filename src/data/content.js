@@ -204,15 +204,10 @@ export const stats = [
   { value: '100 000+', label: 'довольных гостей' },
 ]
 
-export const gallery = [
-  u('1517248135467-4c7edcad34c4', 800),
-  u('1504674900247-0877df9cc836', 800),
-  u('1555396273-367ea4eb4db5', 800),
-  u('1511795409834-ef04bbd61622', 800),
-  u('1555939594-58d7cb561ad1', 800),
-  u('1559339352-11d035aa65de', 800),
-  u('1424847651672-bf20a4b0982b', 800),
-]
+export const gallery = Array.from(
+  { length: 17 },
+  (_, i) => `/images/gallery/food-${String(i + 1).padStart(2, '0')}.webp`,
+)
 
 export const reviews = [
   { name: 'Анна К.', text: 'Очень уютное место, вкусная еда и приятная атмосфера. Идеально для семейного ужина!', avatar: u('1438761681033-6461ffad8d80', 120) },
