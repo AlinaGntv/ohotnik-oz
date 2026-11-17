@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import PageHero from '../components/PageHero.jsx'
 import DishCard from '../components/DishCard.jsx'
+import Gallery from '../components/Gallery.jsx'
 import { Cart } from '../components/Icons.jsx'
 import { delivery, dishes, isPromoActive, menuCategories, promo } from '../data/content.js'
 import { useCart } from '../context/cart.js'
@@ -44,6 +45,8 @@ export default function MenuPage() {
       >
         {promoActive && <span className="menu-page__promo">−{promo.discount}% на всё меню при заказе доставки</span>}
       </PageHero>
+
+      <Gallery />
 
       <div className="menu-page__bar">
         <div className="container menu-page__bar-inner">
