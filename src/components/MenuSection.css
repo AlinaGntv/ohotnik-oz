@@ -148,6 +148,11 @@
   font-weight: 600;
 }
 
+.dish__price--pending {
+  font-size: 14px;
+  color: var(--c-text-muted);
+}
+
 .qty {
   display: flex;
   align-items: center;
