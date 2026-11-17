@@ -2,7 +2,7 @@ import PageHero from '../components/PageHero.jsx'
 import Stay from '../components/Stay.jsx'
 import LeadForm from '../components/LeadForm.jsx'
 import { ArrowRight } from '../components/Icons.jsx'
-import { houses, housesInfo, rooms } from '../data/content.js'
+import { contacts, houses, housesInfo, rooms } from '../data/content.js'
 
 export default function StayPage() {
   return (
@@ -26,7 +26,10 @@ export default function StayPage() {
         title="Бронь домика или номера"
         lead="Укажите, что хотите забронировать, дату и количество гостей — администратор перезвонит и подтвердит бронь."
         submitLabel="Забронировать"
-        contactPhone={{ label: '+7 (915) 144-99-01', href: 'tel:+79151449901' }}
+        contactPhones={[
+          { label: '+7 (915) 144-99-01', href: 'tel:+79151449901' },
+          { label: contacts.phone, href: contacts.phoneHref },
+        ]}
         fields={[
           {
             name: 'option',

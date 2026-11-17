@@ -14,7 +14,7 @@ const today = () => {
 // Форма заявки для внутренних страниц (банкет, проживание).
 // fields: [{ name, label, type: 'text' | 'date' | 'number' | 'select', options?, required?, placeholder?, wide? }]
 // Заявка уходит как бронь (type: 'booking') с полем kind — в Make она попадает в ветку «Бронь».
-export default function LeadForm({ id, kind, title, lead, fields, submitLabel, contactPhone }) {
+export default function LeadForm({ id, kind, title, lead, fields, submitLabel, contactPhones }) {
   const formId = useId()
   const initial = () => ({
     name: '',
@@ -64,12 +64,14 @@ export default function LeadForm({ id, kind, title, lead, fields, submitLabel, c
           <span className="eyebrow">Заявка</span>
           <h2 className="section-title">{title}</h2>
           {lead && <p className="lead">{lead}</p>}
-          {contactPhone && (
+          {contactPhones?.length > 0 && (
             <div className="lead-form__callout">
               <span>Бронирование по телефону</span>
-              <a href={contactPhone.href}>
-                <Phone /> {contactPhone.label}
-              </a>
+              {contactPhones.map((phone) => (
+                <a key={phone.href} href={phone.href}>
+                  <Phone /> {phone.label}
+                </a>
+              ))}
             </div>
           )}
         </div>
