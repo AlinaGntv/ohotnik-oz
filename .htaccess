@@ -1,0 +1,41 @@
+# Один адрес сайта: https://ohotnik-oz.ru (без www).
+# Проверяем и HTTPS, и X-Forwarded-Proto — на случай, если SSL снимается на прокси Jino.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  RewriteCond %{HTTP_HOST} ^www\.ohotnik-oz\.ru$ [NC]
+  RewriteRule ^ https://ohotnik-oz.ru%{REQUEST_URI} [L,R=301]
+
+  RewriteCond %{HTTP_HOST} ^ohotnik-oz\.ru$ [NC]
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://ohotnik-oz.ru%{REQUEST_URI} [L,R=301]
+
+  # Страницы сайта (/privacy, /offer и т. д.) — это маршруты React: всё, чего нет
+  # среди файлов на сервере, отдаём index.html
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ /index.html [L]
+</IfModule>
+
+# Сжатие текстовых файлов
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript image/svg+xml application/json
+</IfModule>
+
+# Файлы из /assets содержат хэш в имени — их можно кэшировать надолго,
+# а index.html всегда проверяем заново, чтобы обновления сайта приходили сразу.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|woff2?)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(png|jpe?g|webp|svg|ico)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
+
+# Не показывать список файлов в папках
+Options -Indexes
