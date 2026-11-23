@@ -61,10 +61,10 @@ export const ordersEnabled = true
 
 // Акция на доставку. startsAt/endsAt — даты в формате 'ГГГГ-ММ-ДД' или null (без ограничения).
 export const promo = {
-  discount: 10,
-  title: 'Скидка 10% на всё меню',
-  startsAt: '2026-11-17',
-  endsAt: '2026-11-30',
+  discount: 0,
+  title: '',
+  startsAt: null,
+  endsAt: null,
 }
 
 export const isPromoActive = (now = new Date()) => {
