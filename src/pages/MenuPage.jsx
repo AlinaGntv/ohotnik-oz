@@ -9,7 +9,7 @@ import { useCart } from '../context/cart.js'
 import { ordersEnabled } from '../data/content.js'
 import './MenuPage.css'
 
-const slug = (c) => `cat-${menuCategories.indexOf(c)}`
+const slug = (category, categories) => `cat-${categories.indexOf(category)}`
 const money = (n) => `${n.toLocaleString('ru-RU').replace(/ /g, ' ')} ₽`
 
 export default function MenuPage() {
@@ -80,7 +80,7 @@ export default function MenuPage() {
         <div className="container">
           {groups.length === 0 && <p className="menu-page__empty">Ничего не нашлось. Попробуйте другое название.</p>}
           {groups.map((g) => (
-            <div className="menu-page__group" id={slug(g.category)} data-category={g.category} key={g.category}>
+            <div className="menu-page__group" id={slug(g.category, menuCategories)} data-category={g.category} key={g.category}>
               <h2 className="menu-page__title">{g.category}</h2>
               <div className="menu-page__grid">
                 {g.items.map((d) => (
