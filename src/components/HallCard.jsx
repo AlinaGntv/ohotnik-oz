@@ -1,11 +1,52 @@
-import { ArrowRight, Check, Users } from './Icons.jsx'
+import { useState } from 'react'
+import { ArrowLeft, ArrowRight, Check, Users } from './Icons.jsx'
 import './Events.css'
 
 export default function HallCard({ hall }) {
+  const slides = [
+    ...(hall.images ?? [hall.image]).filter(Boolean).map((src) => ({ type: 'image', src })),
+    ...(hall.video ? [{ type: 'video', src: hall.video, poster: hall.videoPoster }] : []),
+  ]
+  const [slideIndex, setSlideIndex] = useState(0)
+  const activeSlide = slides[slideIndex]
+
   return (
     <article className="hall">
       <div className="hall__img">
-        <img className="img-cover" src={hall.image} alt={hall.name} loading="lazy" />
+        {activeSlide.type === 'video' ? (
+          <video
+            key={activeSlide.src}
+            className="hall__video"
+            controls
+            playsInline
+            preload="none"
+            poster={activeSlide.poster}
+            aria-label={`Видео: ${hall.name}`}
+          >
+            <source src={activeSlide.src} type="video/mp4" />
+          </video>
+        ) : (
+          <img className="img-cover" src={activeSlide.src} alt={hall.name} loading="lazy" />
+        )}
+        {slides.length > 1 && (
+          <div className="hall__photo-controls" aria-label="Фото и видео зала">
+            <button
+              type="button"
+              aria-label="Предыдущий слайд"
+              onClick={() => setSlideIndex((index) => (index - 1 + slides.length) % slides.length)}
+            >
+              <ArrowLeft />
+            </button>
+            <span>{slideIndex + 1} / {slides.length}{activeSlide.type === 'video' ? ' · Видео' : ''}</span>
+            <button
+              type="button"
+              aria-label="Следующий слайд"
+              onClick={() => setSlideIndex((index) => (index + 1) % slides.length)}
+            >
+              <ArrowRight />
+            </button>
+          </div>
+        )}
         <span className="hall__capacity">
           <Users />
           {hall.capacity}

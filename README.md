@@ -17,7 +17,8 @@ npm run dev
 
 | Что | Где |
 |---|---|
-| Тексты, меню, цены, залы, домики, контакты | `src/data/content.js` |
+| Начальные тексты, меню, цены, залы, домики, контакты | `src/data/content.js` |
+| Управление блюдами, заказами и заявками | `/admin` — настройка в [docs/admin-panel.md](docs/admin-panel.md) |
 | Акция на доставку (скидка и даты) | `promo` в `src/data/content.js` |
 | Логотип и иконки сайта | `public/images/logo.webp`, `public/favicon.png` |
 | Цвета и шрифты | `src/styles/global.css` |

@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router'
+import { Route, Routes, useLocation } from 'react-router'
 import { CartProvider } from './context/CartContext.jsx'
 import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
@@ -17,15 +17,19 @@ import StayPage from './pages/StayPage.jsx'
 import ContactsPage from './pages/ContactsPage.jsx'
 import { ordersEnabled } from './data/content.js'
 import RouteSeo from './components/RouteSeo.jsx'
+import AdminPage from './pages/AdminPage.jsx'
 
 export default function App() {
+  const { pathname } = useLocation()
+  const isAdmin = pathname === '/admin'
   return (
     <CartProvider>
       <ScrollManager />
-      <RouteSeo />
-      <Header />
+      {!isAdmin && <RouteSeo />}
+      {!isAdmin && <Header />}
       <main>
         <Routes>
+          <Route path="/admin" element={<AdminPage />} />
           <Route path="/" element={<Home />} />
           <Route path="/menu" element={<MenuPage />} />
           <Route path="/banquets" element={<BanquetsPage />} />
@@ -39,8 +43,8 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
-      <Footer />
-      {ordersEnabled && <CartDrawer />}
+      {!isAdmin && <Footer />}
+      {!isAdmin && ordersEnabled && <CartDrawer />}
     </CartProvider>
   )
 }

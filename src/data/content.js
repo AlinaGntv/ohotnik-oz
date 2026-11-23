@@ -3,7 +3,7 @@
 const u = (id, w = 800) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=75`
 
 export const images = {
-  hero: u('1510798831971-661eb04b3739', 2000),
+  hero: '/images/hero-ohotnik.webp',
   grill: u('1544025162-d76694265947', 2000),
   booking: u('1510812431401-41d2bd2722f3', 1600),
   aboutOld: u('1449158743715-0a90ebb6d2d8', 900),
@@ -88,21 +88,26 @@ export const navLinks = [
 
 // Категории меню — вкладки показываются в этом порядке. «Десерты» и «Напитки»
 // вернуть сюда, когда появятся их фото и цены.
-export const menuCategories = ['Блюда с мангала', 'Горячее', 'Пицца', 'Паста', 'Закуски', 'Салаты', 'Супы', 'Гарниры', 'Десерты']
+export const menuCategories = ['Блюда с мангала', 'Горячее', 'Пицца', 'Паста', 'Закуски', 'Горячие закуски', 'Брускетты', 'Детское меню', 'Салаты', 'Супы', 'Гарниры', 'Десерты']
 
 // Фото блюд: /public/images/menu. ВНИМАНИЕ: вес и цены — временные, заменить на актуальные из меню ресторана.
 const dish = (slug) => `/images/menu/${slug}.webp`
 
 export const dishes = [
-  { id: 101, category: 'Блюда с мангала', name: 'Шашлык из свинины', weight: '200 г', price: 450, image: dish('shashlyk-svinina') },
-  { id: 102, category: 'Блюда с мангала', name: 'Шашлык из курицы', weight: '200 г', price: 390, image: dish('shashlyk-kurica') },
-  { id: 103, category: 'Блюда с мангала', name: 'Люля-кебаб', weight: '200 г', price: 420, image: dish('lyulya-kebab') },
+  { id: 101, category: 'Блюда с мангала', name: 'Шашлык из свиной шеи', weight: '250 г', price: 720, description: 'Свиная шейка, лаваш, красный лук и соус.', image: dish('shashlyk-svinina') },
+  { id: 102, category: 'Блюда с мангала', name: 'Шашлык из куриного бедра', weight: '250 г', price: 680, description: 'Филе куриного бедра, красный лук, лаваш и соус.', image: dish('shashlyk-kurica') },
+  { id: 103, category: 'Блюда с мангала', name: 'Люля-кебаб', weight: '250 г', price: 720, description: 'Фарш из говядины и свинины, лаваш, красный лук и соус.', image: dish('lyulya-kebab') },
+  { id: 104, category: 'Блюда с мангала', name: 'Овощное ассорти на мангале', weight: null, price: 490, description: 'Овощи, приготовленные на мангале, с зеленью.', image: dish('ovoshi-mangal') },
+  { id: 105, category: 'Блюда с мангала', name: 'Лосось на мангале', weight: null, price: 950, description: 'Филе лосося на мангале с лимоном и соусом.', image: dish('losos-mangal') },
+  { id: 106, category: 'Блюда с мангала', name: 'Рыба на мангале', weight: null, price: 1100, description: 'Рыба, приготовленная на мангале, с лимоном, зеленью и соусом.', image: dish('ryba-mangal') },
+  { id: 107, category: 'Блюда с мангала', name: 'Каре ягнёнка на мангале', weight: null, price: 1450, description: 'Каре ягнёнка с лавашом, красным луком, зеленью и соусом.', image: dish('kare-yagnenka') },
+  { id: 108, category: 'Блюда с мангала', name: 'Ассорти на мангале', weight: null, price: 2400, description: 'Мясо, овощи и картофель на мангале, подаются с соусами.', image: dish('assorti-mangal') },
 
   { id: 201, category: 'Горячее', name: 'Куриное филе в сливочно-грибном соусе с картофелем фри', weight: '350 г', price: 590, image: dish('kurica-slivochnyj-sous') },
   { id: 202, category: 'Горячее', name: 'Шаурма с курицей', weight: '350 г', price: 350, image: dish('shaurma-kurica') },
   { id: 203, category: 'Горячее', name: 'Шаурма с говядиной', weight: '350 г', price: 390, image: dish('shaurma-govyadina') },
   { id: 204, category: 'Горячее', name: 'Колбаски-гриль с картофелем фри', weight: null, price: 590, image: dish('kolbaski-gril-kartofel') },
-  { id: 205, category: 'Горячее', name: 'Куриные крылышки в соусе BBQ', weight: null, price: 590, image: dish('kurinye-krylyshki-bbq') },
+  { id: 205, category: 'Горячие закуски', name: 'Куриные крылья в соусе сладкий чили', weight: '250 г', price: 550, description: 'Куриные крылья, соус сладкий чили.', image: dish('kurinye-krylyshki-sladkij-chili') },
 
   { id: 701, category: 'Пицца', name: 'Пицца с сыром и зеленью', weight: null, price: 540, image: '/images/gallery/food-01.webp' },
   { id: 702, category: 'Пицца', name: 'Пицца с мясной начинкой', weight: null, price: 500, image: '/images/gallery/food-07.webp' },
@@ -110,8 +115,10 @@ export const dishes = [
   { id: 704, category: 'Пицца', name: 'Пицца с колбасками и луком', weight: null, price: 500, image: '/images/gallery/food-15.webp' },
   { id: 705, category: 'Пицца', name: 'Пицца с пепперони', weight: null, price: 500, image: '/images/gallery/food-16.webp' },
   { id: 706, category: 'Пицца', name: 'Пицца с лососем и томатами', weight: null, price: 690, image: dish('pizza-losos-tomaty') },
-  { id: 707, category: 'Пицца', name: 'Пицца Цезарь с курицей', weight: null, price: 650, image: dish('pizza-cezar-kurica') },
+  { id: 707, category: 'Пицца', name: 'Пицца Цезарь с курицей', weight: '570 г', price: 900, description: 'Тесто, моцарелла, соус «Цезарь», куриное филе, томаты черри, айсберг и пармезан.', image: dish('pizza-cezar-kurica') },
   { id: 708, category: 'Пицца', name: 'Пицца с курицей и пепперони', weight: null, price: 600, image: dish('pizza-kurica-pepperoni') },
+  { id: 709, category: 'Пицца', name: 'Пицца с лососем терияки', weight: '550 г', price: 900, description: 'Тесто, моцарелла, сливочный соус, лосось, томаты черри, болгарский перец, соус терияки, кунжут и зелёный лук.', image: dish('pizza-losos-teriyaki') },
+  { id: 710, category: 'Пицца', name: 'Пицца «Ассорти»', weight: '600 г', price: 850, description: 'Тесто, моцарелла, томатный соус, пепперони, куриное филе, шампиньоны, маслины, болгарский перец и красный лук.', image: dish('pizza-assorti') },
 
   { id: 711, category: 'Паста', name: 'Паста с креветками', weight: null, price: 590, image: '/images/gallery/food-02.webp' },
   { id: 712, category: 'Паста', name: 'Паста в сливочном соусе', weight: null, price: 540, image: dish('pasta-slivochnyj-sous-18-11') },
@@ -121,22 +128,30 @@ export const dishes = [
 
   { id: 301, category: 'Закуски', name: 'Пивная тарелка', weight: '800 г', price: 1290, image: dish('pivnaya-tarelka') },
   { id: 302, category: 'Закуски', name: 'Сырные палочки с брусничным соусом', weight: '200 г', price: 390, image: dish('syrnye-palochki') },
-  { id: 303, category: 'Закуски', name: 'Брускетта с креветками', weight: '180 г', price: 450, image: dish('brusketta-krevetki-18-11') },
   { id: 304, category: 'Закуски', name: 'Гренки из бородинского хлеба', weight: '200 г', price: 250, image: dish('grenki') },
-  { id: 305, category: 'Закуски', name: 'Брускетта с лососем', weight: null, price: 490, image: dish('brusketta-losos') },
-  { id: 306, category: 'Закуски', name: 'Брускетта с ветчиной и оливками', weight: null, price: 450, image: dish('brusketta-vetchina-olivki') },
-  { id: 307, category: 'Закуски', name: 'Куриные наггетсы с соусом', weight: null, price: 390, image: dish('kurinye-naggetsy') },
+  { id: 308, category: 'Закуски', name: 'Мясное ассорти', weight: null, price: 850, description: 'Мясная нарезка с соусом.', image: dish('myasnoe-assorti-zakuska') },
+  { id: 309, category: 'Закуски', name: 'Сырная тарелка', weight: null, price: 990, description: 'Ассорти сыров с фруктами, орехами и мёдом.', image: dish('syrnaya-tarelka') },
+  { id: 303, category: 'Брускетты', name: 'Брускетта с креветкой', weight: '100 г', price: 400, description: 'Багет, творожный сыр, соус, паста том ям, тигровая креветка, томаты черри и руккола.', image: dish('brusketta-krevetki') },
+  { id: 305, category: 'Брускетты', name: 'Брускетта с лососем', weight: '100 г', price: 400, description: 'Багет, творожный сыр, апельсин, слабосолёный лосось и руккола.', image: dish('brusketta-losos') },
+  { id: 306, category: 'Брускетты', name: 'Брускетта с пармской ветчиной', weight: '100 г', price: 400, description: 'Багет, творожный сыр, трюфельное масло, пармская ветчина, бальзамический крем-соус и руккола.', image: dish('brusketta-parmskaya-vetchina') },
+  { id: 307, category: 'Горячие закуски', name: 'Куриные наггетсы', weight: '150 г', price: 350, description: 'Куриные наггетсы с соусом.', image: dish('kurinye-naggetsy') },
+  { id: 310, category: 'Горячие закуски', name: 'Кабачки с зеленью', weight: null, price: 450, description: 'Обжаренные кабачки с красным луком и зеленью.', image: dish('kabachki-zharennye') },
+  { id: 801, category: 'Детское меню', name: 'Картофель фри с куриной колбаской', weight: null, price: 400, description: 'Сосиски «Чикен-Спайси», картофель фри, зелень и специи.', image: dish('detskoe-kartofel-kolbaska') },
+  { id: 802, category: 'Детское меню', name: 'Детская паста с курочкой', weight: null, price: 400, description: 'Паста, куриное филе, томаты черри, сливки, оливковое масло и соль.', image: dish('detskoe-pasta-kurica') },
 
   { id: 401, category: 'Салаты', name: 'Цезарь с курицей', weight: '250 г', price: 490, image: dish('cezar-kurica') },
   { id: 402, category: 'Салаты', name: 'Цезарь с креветками', weight: '250 г', price: 590, image: dish('cezar-krevetki') },
   { id: 403, category: 'Салаты', name: 'Греческий салат', weight: '250 г', price: 420, image: dish('grecheskij-salat') },
   { id: 404, category: 'Салаты', name: 'Тёплый салат с баклажаном и фетой', weight: '250 г', price: 450, image: dish('salat-baklazhan') },
+  { id: 405, category: 'Салаты', name: 'Томаты с соусом песто', weight: null, price: 480, description: 'Томаты с соусом песто и зеленью.', image: dish('salat-tomaty-pesto') },
 
   { id: 501, category: 'Супы', name: 'Том ям', weight: '400 г', price: 590, image: dish('tom-yam') },
   { id: 502, category: 'Супы', name: 'Грибной крем-суп в хлебе', weight: '400 г', price: 450, image: dish('sup-v-hlebe') },
+  { id: 503, category: 'Супы', name: 'Борщ домашний', weight: null, price: 490, description: 'Подаётся со сметаной, зеленью и ржаным хлебом.', image: dish('borshch') },
 
   { id: 601, category: 'Гарниры', name: 'Картофель фри с сырным соусом', weight: '150 г', price: 220, image: dish('kartofel-fri') },
   { id: 602, category: 'Гарниры', name: 'Картофель по-деревенски с сырным соусом', weight: '200 г', price: 240, image: dish('kartofel-po-derevenski') },
+  { id: 603, category: 'Гарниры', name: 'Картофель беби на мангале', weight: null, price: 390, description: 'Молодой картофель, приготовленный на мангале.', image: dish('kartofel-bebi') },
 
   { id: 721, category: 'Десерты', name: 'Чизкейк', weight: null, price: 350, image: '/images/gallery/food-06.webp' },
   { id: 722, category: 'Десерты', name: 'Ассорти десертов с мороженым', weight: null, price: 550, image: '/images/gallery/food-08.webp' },
@@ -166,7 +181,15 @@ export const halls = [
     features: ['Зона для выездной регистрации', 'Фуршетная зона — на выбор'],
     extras: [{ label: 'Аренда экрана', price: '5 000 ₽' }],
     link: vk(9182523),
-    image: u('1464366400600-7168b8af9bc3', 900),
+    images: [
+      '/images/banquet-tent-interior.webp',
+      '/images/banquet-tent-exterior.webp',
+      '/images/banquet-tent-ceremony.webp',
+      '/images/banquet-tent-lights.webp',
+      '/images/banquet-tent-bride.webp',
+    ],
+    video: '/videos/banquet-tent.mp4',
+    videoPoster: '/images/banquet-tent-video-poster.webp',
   },
   {
     name: 'Белый зал',
@@ -175,7 +198,7 @@ export const halls = [
     features: ['Зона для выездной регистрации', 'Фуршетная зона — на выбор'],
     extras: [],
     link: vk(9091396),
-    image: u('1519225421980-715cb0215aed', 900),
+    images: ['/images/hall-white-overview.webp', '/images/hall-white-banquet.webp'],
   },
   {
     name: 'Каминный зал',
@@ -183,7 +206,7 @@ export const halls = [
     features: ['Уютная камерная атмосфера'],
     extras: [{ label: 'Караоке', price: '20 000 ₽' }],
     link: vk(9624428),
-    image: u('1514933651103-005eec06c04b', 900),
+    image: '/images/hall-fireplace.webp',
   },
 ]
 

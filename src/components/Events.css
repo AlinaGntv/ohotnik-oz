@@ -39,6 +39,61 @@
   transition: transform 1.4s var(--ease);
 }
 
+.hall__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--c-dark-3);
+  object-fit: contain;
+}
+
+.hall__photo-controls {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  pointer-events: none;
+}
+
+.hall__photo-controls button {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid rgba(243, 234, 217, 0.3);
+  border-radius: 50%;
+  background: rgba(14, 20, 17, 0.72);
+  color: var(--c-light);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background 0.25s, border-color 0.25s;
+}
+
+.hall__photo-controls button:hover {
+  border-color: var(--c-gold-light);
+  background: rgba(14, 20, 17, 0.92);
+}
+
+.hall__photo-controls svg {
+  width: 18px;
+  height: 18px;
+}
+
+.hall__photo-controls span {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(14, 20, 17, 0.72);
+  color: var(--c-light);
+  font-size: 12px;
+}
+
 .hall:hover .hall__img img {
   transform: scale(1.06);
 }

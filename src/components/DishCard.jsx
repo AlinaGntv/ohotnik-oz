@@ -25,6 +25,7 @@ export default function DishCard({ dish, promoActive }) {
       </div>
       <div className="dish__body">
         <h3 className="dish__name">{dish.name}</h3>
+        {dish.description && <p className="dish__description">{dish.description}</p>}
         <div className="dish__footer">
           {!priceKnown ? (
             <span className="dish__price dish__price--pending">Цена уточняется</span>

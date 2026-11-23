@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
-import { dishes, isPromoActive, ordersEnabled, promoPrice } from '../data/content.js'
+import { isPromoActive, ordersEnabled, promoPrice } from '../data/content.js'
+import { useMenu } from './useMenu.js'
 import { CartContext } from './cart.js'
 
 const STORAGE_KEY = 'ohotnik-cart'
 
-const loadItems = () => {
+const loadItems = (dishes) => {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')
     // оставляем только блюда, которые ещё есть в меню
@@ -15,8 +16,9 @@ const loadItems = () => {
 }
 
 export function CartProvider({ children }) {
+  const { dishes } = useMenu()
   // { [dishId]: quantity }
-  const [items, setItems] = useState(ordersEnabled ? loadItems : () => ({}))
+  const [items, setItems] = useState(ordersEnabled ? () => loadItems(dishes) : () => ({}))
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
@@ -62,7 +64,7 @@ export function CartProvider({ children }) {
       open: () => setIsOpen(true),
       close: () => setIsOpen(false),
     }
-  }, [items, isOpen])
+  }, [items, isOpen, dishes])
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }

@@ -3,11 +3,13 @@ import { Link } from 'react-router'
 import Reveal from './Reveal.jsx'
 import DishCard from './DishCard.jsx'
 import { ArrowLeft, ArrowRight } from './Icons.jsx'
-import { dishes, isPromoActive, menuCategories } from '../data/content.js'
+import { isPromoActive } from '../data/content.js'
+import { useMenu } from '../context/useMenu.js'
 import useSlider from '../hooks/useSlider.js'
 import './MenuSection.css'
 
 export default function MenuSection() {
+  const { dishes, categories: menuCategories } = useMenu()
   const [category, setCategory] = useState(menuCategories[0])
   const list = dishes.filter((d) => d.category === category)
   const promoActive = isPromoActive()

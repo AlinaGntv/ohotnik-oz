@@ -311,4 +311,33 @@ if (!$delivered) {
     fail(502, 'Не удалось отправить заявку. Попробуйте ещё раз или позвоните нам.');
 }
 
+// Сохраняем принятые обращения отдельно от файлов сайта: обновление сборки не удалит историю.
+$dataDir = dirname(__DIR__, 3) . '/ohotnik-data';
+if (!is_dir($dataDir)) {
+    @mkdir($dataDir, 0700, true);
+}
+if (is_dir($dataDir) && is_writable($dataDir)) {
+    $lock = @fopen($dataDir . '/requests.lock', 'c');
+    if ($lock && flock($lock, LOCK_EX)) {
+        $storePath = $dataDir . '/requests.json';
+        $stored = is_file($storePath) ? json_decode((string) file_get_contents($storePath), true) : [];
+        if (!is_array($stored)) $stored = [];
+        $stored[] = array_merge(array_diff_key($payload, ['secret' => true, 'text' => true]), ['status' => 'new']);
+        $temp = tempnam($dataDir, 'request-');
+        if ($temp && file_put_contents($temp, json_encode($stored, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT), LOCK_EX) !== false) {
+            @chmod($temp, 0600);
+            @rename($temp, $storePath);
+        } elseif ($temp) {
+            error_log('notify.php: unable to persist the accepted request in the admin journal');
+            @unlink($temp);
+        }
+        flock($lock, LOCK_UN);
+        fclose($lock);
+    } else {
+        error_log('notify.php: unable to lock the admin request journal');
+    }
+} else {
+    error_log('notify.php: admin request journal directory is not writable');
+}
+
 respond(200, ['ok' => true, 'id' => $id]);

@@ -3,7 +3,8 @@ import PageHero from '../components/PageHero.jsx'
 import DishCard from '../components/DishCard.jsx'
 import Gallery from '../components/Gallery.jsx'
 import { Cart } from '../components/Icons.jsx'
-import { delivery, dishes, isPromoActive, menuCategories, promo } from '../data/content.js'
+import { delivery, isPromoActive, promo } from '../data/content.js'
+import { useMenu } from '../context/useMenu.js'
 import { useCart } from '../context/cart.js'
 import { ordersEnabled } from '../data/content.js'
 import './MenuPage.css'
@@ -12,6 +13,7 @@ const slug = (c) => `cat-${menuCategories.indexOf(c)}`
 const money = (n) => `${n.toLocaleString('ru-RU').replace(/ /g, ' ')} ₽`
 
 export default function MenuPage() {
+  const { dishes, categories: menuCategories } = useMenu()
   const [query, setQuery] = useState('')
   const [active, setActive] = useState(menuCategories[0])
   const { count, total, open } = useCart()
@@ -22,7 +24,7 @@ export default function MenuPage() {
     return menuCategories
       .map((c) => ({ category: c, items: dishes.filter((d) => d.category === c && d.name.toLowerCase().includes(q)) }))
       .filter((g) => g.items.length)
-  }, [query])
+  }, [query, dishes, menuCategories])
 
   // подсвечиваем категорию, до которой докрутили
   useEffect(() => {
