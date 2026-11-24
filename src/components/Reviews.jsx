@@ -10,14 +10,14 @@ export default function Reviews() {
         <div className="section-head">
           <Reveal className="section-head__text">
             <span className="eyebrow">Отзывы гостей</span>
-            <h2 className="section-title">Охотник на Яндекс Картах</h2>
+            <h2 className="section-title">Тёплые слова о «Охотнике»</h2>
             <p className="reviews__intro">
-              Здесь отображаются отзывы из карточки ресторана. Тексты и рейтинг загружаются напрямую из Яндекс Карт.
+              Впечатления гостей о кухне, залах и праздниках. Оригинальные отзывы загружаются напрямую из Яндекс Карт.
             </p>
           </Reveal>
           <Reveal className="reviews__actions" delay={150}>
             <a href={yandexReviewsUrl} className="btn btn--ghost" target="_blank" rel="noreferrer">
-              Открыть все отзывы <ArrowRight />
+              Все отзывы на Яндексе <ArrowRight />
             </a>
           </Reveal>
         </div>
