@@ -79,23 +79,42 @@
 .review__author {
   display: flex;
   align-items: center;
-  gap: 14px;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
   margin-top: auto;
   padding-top: 24px;
   border-top: 1px solid var(--c-line-light);
 }
 
-.review__avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
+.review__byline {
+  gap: 14px;
 }
 
 .review__name {
   display: block;
   font-size: 14px;
   font-weight: 600;
+}
+
+.review__date {
+  display: block;
+  margin-top: 4px;
+  color: var(--c-text-muted);
+  font-size: 12px;
+}
+
+.review__source {
+  color: var(--c-text-muted);
+  font-size: 12px;
+  text-decoration: underline;
+  text-decoration-color: var(--c-gold);
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.review__source:hover {
+  color: var(--c-gold);
 }
 
 @media (max-width: 900px) {
