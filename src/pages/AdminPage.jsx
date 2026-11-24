@@ -70,12 +70,12 @@ function DishEditor({ dish, categories, csrf, onClose, onSave }) {
     } catch (err) { setError(err.message) } finally { setUploading(false) }
   }
   return <div className="admin__modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-    <form className="admin__modal" onSubmit={async (event) => { event.preventDefault(); setError(''); try { await onSave({ dish: { ...form, id: form.id == null ? undefined : Number(form.id), price: Number(form.price), weight: form.weight || null } }) } catch (err) { setError(err.message) } }}>
+    <form className="admin__modal" onSubmit={async (event) => { event.preventDefault(); setError(''); const price = String(form.price).trim(); if (!/^\d+$/.test(price) || Number(price) > 100000) { setError('Укажите целую цену от 0 до 100 000 ₽'); return } try { await onSave({ dish: { ...form, id: form.id == null ? undefined : Number(form.id), price: Number(price), weight: form.weight || null } }) } catch (err) { setError(err.message) } }}>
       <div className="admin__modal-head"><div><span className="admin__eyebrow">Карточка меню</span><h2>{dish ? 'Редактировать блюдо' : 'Новое блюдо'}</h2></div><button type="button" aria-label="Закрыть" onClick={onClose}>×</button></div>
       <div className="admin__form-grid">
         <label>Название<input value={form.name} onChange={set('name')} required maxLength={100} /></label>
         <label>Категория<select value={form.category} onChange={set('category')} required>{categories.map((category) => <option key={category}>{category}</option>)}</select></label>
-        <label>Цена, ₽<input type="number" min="0" max="100000" value={form.price} onChange={set('price')} required /></label>
+        <label>Цена, ₽<input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={6} value={form.price} onChange={set('price')} required /></label>
         <label>Вес / объём<input value={form.weight || ''} onChange={set('weight')} maxLength={40} placeholder="Например, 250 г" /></label>
         <label className="admin__field-wide">Путь к изображению<input value={form.image} onChange={set('image')} required placeholder="/images/menu/dish.webp" /></label>
         <label className="admin__field-wide">Загрузить фото (JPG, PNG или WebP, до 8 МБ)<input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => uploadImage(event.target.files?.[0])} disabled={uploading} />{uploading && <span>Загружаем изображение…</span>}</label>
