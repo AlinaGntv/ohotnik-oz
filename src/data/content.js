@@ -257,32 +257,4 @@ export const gallery = [
   ...Array.from({ length: 17 }, (_, i) => `/images/gallery/food-${String(i + 1).padStart(2, '0')}.webp`),
 ]
 
-export const reviews = [
-  {
-    name: 'Елена',
-    date: '21 сентября 2026',
-    text: '«Наша свадебная вечеринка проходила в шатре… Кухня шикарная! Всё вкусно! Шашлык шик!»',
-    source: 'Яндекс Карты',
-  },
-  {
-    name: 'Алёна',
-    date: '8 августа 2026',
-    text: '«Всё прошло гладко, ровно по обговорённому с администратором ранее таймингу» — о свадьбе в шатре.',
-    source: 'Яндекс Карты',
-  },
-  {
-    name: 'Виктория К.',
-    date: '1 июля 2026',
-    text: '«Сам белый домик очень нарядный, светлый, не требует дополнительного оформления».',
-    source: 'Яндекс Карты',
-  },
-  {
-    name: 'Karina S.',
-    date: '10 октября 2026',
-    text: '«Атмосфера уютная, каминный зал красиво оформлен, гостям было комфортно».',
-    source: 'Яндекс Карты',
-  },
-]
-
-export const yandexReviewsUrl = 'https://yandex.com/maps/org/ohotnik/1014180583/reviews/'
-export const yandexReviewSummary = { rating: '4,8', count: '1 330 оценок · 478 отзывов' }
+export const yandexReviewsUrl = 'https://yandex.ru/maps/org/ohotnik/1014180583/reviews/'
