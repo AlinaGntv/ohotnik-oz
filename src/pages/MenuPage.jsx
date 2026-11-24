@@ -36,7 +36,7 @@ export default function MenuPage() {
     return () => io.disconnect()
   }, [groups])
 
-  const scrollTo = (c) => document.getElementById(slug(c))?.scrollIntoView({ behavior: 'smooth' })
+  const scrollTo = (c) => document.getElementById(slug(c, menuCategories))?.scrollIntoView({ behavior: 'smooth' })
 
   return (
     <>
