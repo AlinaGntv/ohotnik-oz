@@ -172,7 +172,7 @@ export const halls = [
     features: ['Зона для выездной регистрации', 'Фуршетная зона — на выбор'],
     extras: [{ label: 'Аренда LED-экрана', price: '10 000 ₽' }],
     link: vk(9624417),
-    image: u('1519167758481-83f550bb49b3', 900),
+    image: '/images/hall-main-service.webp',
   },
   {
     name: 'Банкетный шатёр',
