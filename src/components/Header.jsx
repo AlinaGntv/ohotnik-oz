@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import Logo from './Logo.jsx'
-import { ArrowRight, Cart, Phone, Telegram, Whatsapp, Max } from './Icons.jsx'
-import { contacts, navLinks, ordersEnabled } from '../data/content.js'
+import { ArrowRight, Cart, Max, Phone, Pin } from './Icons.jsx'
+import { contacts, navLinks, ordersEnabled, yandexMapsUrl } from '../data/content.js'
 import { useCart } from '../context/cart.js'
 import './Header.css'
 
 const Messengers = ({ className = '' }) => (
   <div className={`messengers ${className}`}>
-    <a href="#" className="msg" aria-label="WhatsApp"><Whatsapp /></a>
     <span className="msg" aria-label="Канал в MAX — ссылка скоро появится" title="Ссылка на канал появится позже"><Max /></span>
-    <a href="#" className="msg" aria-label="Telegram"><Telegram /></a>
+    <a href={yandexMapsUrl} className="msg" aria-label="Яндекс Карты" title="Яндекс Карты" target="_blank" rel="noopener noreferrer"><Pin /></a>
   </div>
 )
 
