@@ -56,7 +56,28 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
-  counter-reset: step;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.banquets-catering {
+  padding: 32px 0 16px;
+  background: var(--c-cream);
+}
+
+.banquets-steps.section {
+  padding-top: 32px;
+}
+
+.banquets-steps__phone {
+  margin: -24px 0 36px;
+  color: var(--c-text-muted);
+}
+
+.banquets-steps__phone a {
+  color: var(--c-gold-dark);
+  white-space: nowrap;
 }
 
 .banquets-steps__list li {

@@ -41,7 +41,7 @@ export default function Events() {
             <h3>Праздник на вашей площадке</h3>
             <p>Ресторан организует выездное обслуживание мероприятий. Заказ — от {cateringMinimum.toLocaleString('ru-RU')} ₽.</p>
           </div>
-          <a className="btn btn--outline" href={contacts.mobileHref}>Обсудить кейтеринг <ArrowRight /></a>
+          <a className="btn btn--gold" href={contacts.mobileHref}>Обсудить кейтеринг <ArrowRight /></a>
         </Reveal>
 
         <Reveal as="ul" className="events__terms">

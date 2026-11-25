@@ -217,7 +217,6 @@
 }
 
 @media (max-width: 1240px) {
-  .header__messengers,
   .header__phone span {
     display: none;
   }
@@ -225,6 +224,14 @@
   .header__nav {
     gap: 24px;
   }
+}
+
+@media (max-width: 1500px) and (min-width: 1025px) {
+  .header__inner { gap: 20px; }
+  .header__nav { gap: 14px; }
+  .header__actions { gap: 10px; }
+  .header__cta { display: none; }
+  .header__phone span { display: none; }
 }
 
 @media (max-width: 1024px) {
@@ -239,6 +246,8 @@
   .header__actions {
     margin-left: auto;
   }
+
+  .header__messengers { display: flex; }
 
   .header__phone {
     display: grid;

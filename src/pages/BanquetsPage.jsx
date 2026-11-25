@@ -86,11 +86,11 @@ export default function BanquetsPage() {
         </div>
       </section>
 
-      <section className="section">
+      <section className="banquets-catering">
         <div className="container">
           <Reveal className="events__catering">
             <div><span className="eyebrow">Кейтеринг</span><h3>Праздник на вашей площадке</h3><p>Выездное обслуживание ресторана — от {cateringMinimum.toLocaleString('ru-RU')} ₽.</p></div>
-            <a className="btn btn--outline" href={contacts.mobileHref}>Обсудить кейтеринг <ArrowRight /></a>
+            <a className="btn btn--gold" href={contacts.mobileHref}>Обсудить кейтеринг <ArrowRight /></a>
           </Reveal>
         </div>
       </section>
@@ -103,6 +103,7 @@ export default function BanquetsPage() {
               <h2 className="section-title">Бронирование банкета</h2>
             </div>
           </Reveal>
+          <p className="banquets-steps__phone">Можно сразу позвонить: <a href={contacts.mobileHref}>{contacts.mobile}</a> · <a href={contacts.phoneHref}>{contacts.phone}</a></p>
           <ol className="banquets-steps__list">
             {steps.map(([title, text], i) => (
               <Reveal as="li" key={title} delay={i * 110}>
@@ -121,6 +122,7 @@ export default function BanquetsPage() {
         title="Заявка на банкет"
         lead="Администратор перезвонит, расскажет о свободных датах и поможет выбрать зал и меню."
         submitLabel="Отправить заявку"
+        contactPhones={[{ label: contacts.mobile, href: contacts.mobileHref }, { label: contacts.phone, href: contacts.phoneHref }]}
         fields={[
           { name: 'date', label: 'Дата', type: 'date', required: true },
           { name: 'guests', label: 'Гостей', type: 'number', required: true, min: 1, max: 300 },

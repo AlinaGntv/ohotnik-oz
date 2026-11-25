@@ -12,7 +12,7 @@ function HousesBlock() {
         <h2 className="section-title">Домики для отдыха (дневные)</h2>
         <p className="lead">Домики сдаются для отдыха в течение дня. Ночёвка в домиках не предусмотрена.</p>
       </div>
-      <Link to="/houses" className="btn btn--outline">Подробнее и бронь <ArrowRight /></Link>
+      <a href="/houses#house-booking" className="btn btn--outline">Подробнее и бронь <ArrowRight /></a>
     </div>
     <div className="stay__houses">
       {houses.map((h, i) => (
@@ -46,7 +46,7 @@ function HotelBlock() {
         <h2 className="section-title">Номера для ночёвки</h2>
         <p className="lead">Для проживания с ночёвкой бронируйте гостиничный номер.</p>
       </div>
-      <Link to="/hotel" className="btn btn--outline">Гостиница и бронь <ArrowRight /></Link>
+      <a href="/hotel#hotel-booking" className="btn btn--outline">Гостиница и бронь <ArrowRight /></a>
     </div>
     <div className="stay__offers stay__offers--hotel">
       <article className="offer offer--rooms">
