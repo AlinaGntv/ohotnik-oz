@@ -1,11 +1,11 @@
 import PageHero from '../components/PageHero.jsx'
 import Reveal from '../components/Reveal.jsx'
-import { ArrowRight, Car, Clock, Instagram, Phone, Pin, Telegram, Truck, Vk } from '../components/Icons.jsx'
+import { ArrowRight, Car, Clock, Max, Phone, Pin, Telegram, Truck, Vk } from '../components/Icons.jsx'
 import { Link } from 'react-router'
-import { company, contacts, delivery, images, ordersEnabled } from '../data/content.js'
+import { company, contacts, delivery, images, ordersEnabled, yandexMapsUrl } from '../data/content.js'
 import './ContactsPage.css'
 
-const routeUrl = `https://yandex.ru/maps/?text=${encodeURIComponent(contacts.mapQuery)}`
+const routeUrl = yandexMapsUrl
 const mapUrl = `https://yandex.ru/map-widget/v1/?ll=${contacts.mapCenter}&z=14&text=${encodeURIComponent(contacts.mapQuery)}`
 
 export default function ContactsPage() {
@@ -80,8 +80,8 @@ export default function ContactsPage() {
               <p className="contact-card__muted">Почта для обращений: {company.email}</p>
               <div className="contact-card__social">
                 <a href="#" aria-label="ВКонтакте"><Vk /></a>
-                <a href="#" aria-label="Instagram"><Instagram /></a>
                 <a href="#" aria-label="Telegram"><Telegram /></a>
+                <span aria-label="Канал в MAX — ссылка скоро появится" title="Ссылка на канал появится позже"><Max /></span>
               </div>
             </Reveal>
           </div>

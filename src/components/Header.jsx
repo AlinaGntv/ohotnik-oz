@@ -9,7 +9,7 @@ import './Header.css'
 const Messengers = ({ className = '' }) => (
   <div className={`messengers ${className}`}>
     <a href="#" className="msg" aria-label="WhatsApp"><Whatsapp /></a>
-    <a href="#" className="msg" aria-label="MAX"><Max /></a>
+    <span className="msg" aria-label="Канал в MAX — ссылка скоро появится" title="Ссылка на канал появится позже"><Max /></span>
     <a href="#" className="msg" aria-label="Telegram"><Telegram /></a>
   </div>
 )

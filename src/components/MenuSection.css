@@ -61,6 +61,13 @@
   color: var(--c-text-muted);
 }
 
+.menu-disclaimer {
+  margin-top: 12px;
+  color: var(--c-text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 .dish {
   display: flex;
   flex-direction: column;

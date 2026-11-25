@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router'
 import Logo from './Logo.jsx'
 import Reveal from './Reveal.jsx'
-import { Clock, Instagram, Phone, Pin, Telegram, Vk } from './Icons.jsx'
+import { Clock, Max, Phone, Pin, Telegram, Vk } from './Icons.jsx'
 import { company, contacts, legalLinks, navLinks } from '../data/content.js'
 import './Footer.css'
 
@@ -19,8 +19,8 @@ export default function Footer() {
           </p>
           <div className="footer__social">
             <a href="#" aria-label="ВКонтакте"><Vk /></a>
-            <a href="#" aria-label="Instagram"><Instagram /></a>
             <a href="#" aria-label="Telegram"><Telegram /></a>
+            <span aria-label="Канал в MAX — ссылка скоро появится" title="Ссылка на канал появится позже"><Max /></span>
           </div>
         </Reveal>
 

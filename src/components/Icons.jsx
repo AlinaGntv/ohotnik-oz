@@ -137,14 +137,6 @@ export const Vk = (p) => (
   </svg>
 )
 
-export const Instagram = (p) => (
-  <svg {...base} {...p}>
-    <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
-    <circle cx="12" cy="12" r="4" />
-    <circle cx="17.2" cy="6.8" r=".8" fill="currentColor" />
-  </svg>
-)
-
 export const Check = (p) => (
   <svg {...base} {...p}>
     <path d="m5 12.5 4.5 4.5L19 7.5" />

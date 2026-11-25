@@ -72,7 +72,8 @@
   margin-top: 6px;
 }
 
-.contact-card__social a {
+.contact-card__social a,
+.contact-card__social span {
   display: grid;
   place-items: center;
   width: 42px;

@@ -89,6 +89,7 @@ export default function MenuPage() {
               </div>
             </div>
           ))}
+          <p className="menu-disclaimer">Внешний вид блюда может отличаться от представленного на фото</p>
         </div>
       </section>
 

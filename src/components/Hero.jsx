@@ -14,9 +14,6 @@ export default function Hero() {
       <div className="hero__overlay" />
 
       <div className="container hero__content">
-        <span className="eyebrow hero__anim" style={{ '--i': 0 }}>
-          Fusion restaurant
-        </span>
         <h1 className="hero__title">
           <span className="hero__line">
             <span style={{ '--i': 1 }}>Ресторан</span>

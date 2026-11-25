@@ -68,6 +68,7 @@ export default function MenuSection() {
             <p className="menu__empty">Скоро здесь появятся блюда этой категории.</p>
           )}
         </div>
+        <p className="menu-disclaimer">Внешний вид блюда может отличаться от представленного на фото</p>
       </div>
     </section>
   )

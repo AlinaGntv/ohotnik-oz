@@ -257,4 +257,5 @@ export const gallery = [
   ...Array.from({ length: 17 }, (_, i) => `/images/gallery/food-${String(i + 1).padStart(2, '0')}.webp`),
 ]
 
-export const yandexReviewsUrl = 'https://yandex.ru/maps/org/ohotnik/1014180583/reviews/'
+export const yandexMapsUrl = 'https://yandex.ru/maps/org/okhotnik/1014180583/'
+export const yandexReviewsUrl = 'https://yandex.ru/maps/org/okhotnik/1014180583/reviews/'

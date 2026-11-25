@@ -30,7 +30,7 @@ export default function Reviews() {
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
           />
-          <a className="reviews__widget-link" href="https://yandex.ru/maps/org/ohotnik/1014180583/" target="_blank" rel="noreferrer">
+          <a className="reviews__widget-link" href="https://yandex.ru/maps/org/okhotnik/1014180583/" target="_blank" rel="noreferrer">
             Ресторан «Охотник» на Яндекс Картах
           </a>
         </Reveal>
