@@ -1,8 +1,8 @@
 import { Link, useLocation } from 'react-router'
 import Logo from './Logo.jsx'
 import Reveal from './Reveal.jsx'
-import { Clock, Max, Phone, Pin, Telegram, Vk } from './Icons.jsx'
-import { company, contacts, legalLinks, navLinks } from '../data/content.js'
+import { Clock, Max, Phone, Pin } from './Icons.jsx'
+import { company, contacts, legalLinks, navLinks, yandexMapsUrl } from '../data/content.js'
 import './Footer.css'
 
 export default function Footer() {
@@ -18,9 +18,8 @@ export default function Footer() {
             <br />в лесопарке «Мельница»
           </p>
           <div className="footer__social">
-            <a href="#" aria-label="ВКонтакте"><Vk /></a>
-            <a href="#" aria-label="Telegram"><Telegram /></a>
             <span aria-label="Канал в MAX — ссылка скоро появится" title="Ссылка на канал появится позже"><Max /></span>
+            <a href={yandexMapsUrl} aria-label="Яндекс Карты" title="Яндекс Карты" target="_blank" rel="noopener noreferrer"><Pin /></a>
           </div>
         </Reveal>
 
