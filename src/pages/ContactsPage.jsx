@@ -1,6 +1,6 @@
 import PageHero from '../components/PageHero.jsx'
 import Reveal from '../components/Reveal.jsx'
-import { ArrowRight, Car, Clock, Max, Phone, Pin, Telegram, Truck, Vk } from '../components/Icons.jsx'
+import { ArrowRight, Car, Clock, Max, Phone, Pin, Truck } from '../components/Icons.jsx'
 import { Link } from 'react-router'
 import { company, contacts, delivery, images, ordersEnabled, yandexMapsUrl } from '../data/content.js'
 import './ContactsPage.css'
@@ -17,8 +17,8 @@ export default function ContactsPage() {
         lead="Ресторан «Охотник» в лесопарке «Мельница» в Орехово-Зуеве — с собственной парковкой и домиками на территории."
         image={images.aboutNew}
       >
-        <a href={contacts.phoneHref} className="btn btn--gold">
-          <Phone /> {contacts.phone}
+        <a href={contacts.mobileHref} className="btn btn--gold">
+          <Phone /> {contacts.mobile}
         </a>
         <a href={routeUrl} target="_blank" rel="noopener noreferrer" className="btn btn--outline">
           Построить маршрут <ArrowRight />
@@ -44,6 +44,7 @@ export default function ContactsPage() {
                   {contacts.phone}
                 </a>
               </p>
+              <p><a href={contacts.mobileHref} className="contact-card__big">{contacts.mobile}</a></p>
               <p className="contact-card__muted">Бронирование столов, банкеты и проживание</p>
             </Reveal>
             <Reveal className="contact-card" delay={160}>
@@ -79,9 +80,8 @@ export default function ContactsPage() {
               <h2>Мы в соцсетях</h2>
               <p className="contact-card__muted">Почта для обращений: {company.email}</p>
               <div className="contact-card__social">
-                <a href="#" aria-label="ВКонтакте"><Vk /></a>
-                <a href="#" aria-label="Telegram"><Telegram /></a>
                 <a href="https://max.ru/join/L6GQ4B7pTrO67eVdiG6dFJrQ9MHsXAkH_7ON6jm5t3M" aria-label="Канал в MAX" title="Канал в MAX" target="_blank" rel="noopener noreferrer"><Max /></a>
+                <a href={yandexMapsUrl} aria-label="Яндекс Карты" title="Яндекс Карты" target="_blank" rel="noopener noreferrer"><Pin /></a>
               </div>
             </Reveal>
           </div>

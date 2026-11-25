@@ -11,10 +11,10 @@ const today = () => {
   return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10)
 }
 
-// Форма заявки для внутренних страниц (банкет, проживание).
+// Форма заявки для банкетов, номеров, дневных домиков и столов.
 // fields: [{ name, label, type: 'text' | 'date' | 'number' | 'select', options?, required?, placeholder?, wide? }]
 // Заявка уходит как бронь (type: 'booking') с полем kind — в Make она попадает в ветку «Бронь».
-export default function LeadForm({ id, kind, title, lead, fields, submitLabel, contactPhones }) {
+export default function LeadForm({ id, kind, venue, title, lead, fields, submitLabel, contactPhones }) {
   const formId = useId()
   const initial = () => ({
     name: '',
@@ -45,7 +45,7 @@ export default function LeadForm({ id, kind, title, lead, fields, submitLabel, c
     setError('')
     setStatus('sending')
     try {
-      const data = { ...form, kind }
+      const data = { ...form, kind, ...(venue ? { venue } : {}) }
       fields.filter((f) => f.type === 'number').forEach((f) => (data[f.name] = Number(form[f.name])))
       const res = await sendRequest('booking', data)
       setRequestId(res.id)

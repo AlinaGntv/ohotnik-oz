@@ -13,6 +13,8 @@ export const images = {
 export const contacts = {
   phone: '8 (496) 423-06-33',
   phoneHref: 'tel:+74964230633',
+  mobile: '+7 (915) 144-99-01',
+  mobileHref: 'tel:+79151449901',
   address: 'Орехово-Зуево, Лесопарк «Мельница»',
   hours: 'Ежедневно 10:00 до 22:00',
   hoursShort: 'Ежедневно до 22:00',
@@ -81,10 +83,15 @@ export const navLinks = [
   { label: 'Меню', href: '/menu' },
   { label: 'Доставка', href: '#delivery' },
   { label: 'Банкеты', href: '/banquets' },
-  { label: 'Проживание', href: '/stay' },
+  { label: 'Домики', href: '/houses' },
+  { label: 'Гостиница', href: '/hotel' },
+  { label: 'Караоке', href: '/karaoke' },
+  { label: 'Лесная веранда', href: '/veranda' },
   { label: 'О ресторане', href: '#about' },
   { label: 'Контакты', href: '/contacts' },
 ]
+
+export const cateringMinimum = 10000
 
 // Категории меню — вкладки показываются в этом порядке. «Десерты» и «Напитки»
 // вернуть сюда, когда появятся их фото и цены.
@@ -165,6 +172,11 @@ export const dishes = [
 // Ссылки на карточки в VK-маркете ресторана
 const vk = (id) => `https://vk.ru/market-219080846_${id}`
 
+export const karaokeInfo = {
+  tagline: 'Любой банкет в караоке',
+  schedule: ['Четверг — не работает', 'Пятница — 20:00–04:00', 'Суббота — 18:00–04:00', 'Воскресенье — 20:00–02:00'],
+}
+
 export const halls = [
   {
     id: 'main',
@@ -209,10 +221,7 @@ export const halls = [
     capacity: '25–35 гостей',
     features: ['Уютная камерная атмосфера'],
     extras: [{ label: 'Караоке', price: '20 000 ₽' }],
-    karaoke: {
-      tagline: 'Любой банкет в караоке',
-      schedule: ['Четверг — не работает', 'Пятница — 20:00–04:00', 'Суббота — 18:00–04:00', 'Воскресенье — 20:00–02:00'],
-    },
+    karaoke: karaokeInfo,
     link: vk(9624428),
     image: '/images/hall-fireplace.webp',
   },

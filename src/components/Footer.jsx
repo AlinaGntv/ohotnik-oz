@@ -50,6 +50,10 @@ export default function Footer() {
               <a href={contacts.phoneHref}>{contacts.phone}</a>
             </li>
             <li>
+              <Phone />
+              <a href={contacts.mobileHref}>{contacts.mobile}</a>
+            </li>
+            <li>
               <Clock />
               <span>{contacts.hours}</span>
             </li>

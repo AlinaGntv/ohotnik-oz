@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from 'react-router'
+import { Navigate, Route, Routes, useLocation } from 'react-router'
 import { CartProvider } from './context/CartContext.jsx'
 import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
@@ -13,7 +13,10 @@ import BookingTerms from './pages/legal/BookingTerms.jsx'
 import NotFound from './pages/NotFound.jsx'
 import MenuPage from './pages/MenuPage.jsx'
 import BanquetsPage from './pages/BanquetsPage.jsx'
-import StayPage from './pages/StayPage.jsx'
+import HousesPage from './pages/HousesPage.jsx'
+import HotelPage from './pages/HotelPage.jsx'
+import KaraokePage from './pages/KaraokePage.jsx'
+import VerandaPage from './pages/VerandaPage.jsx'
 import ContactsPage from './pages/ContactsPage.jsx'
 import { ordersEnabled } from './data/content.js'
 import RouteSeo from './components/RouteSeo.jsx'
@@ -33,7 +36,11 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/menu" element={<MenuPage />} />
           <Route path="/banquets" element={<BanquetsPage />} />
-          <Route path="/stay" element={<StayPage />} />
+          <Route path="/stay" element={<Navigate to="/houses" replace />} />
+          <Route path="/houses" element={<HousesPage />} />
+          <Route path="/hotel" element={<HotelPage />} />
+          <Route path="/karaoke" element={<KaraokePage />} />
+          <Route path="/veranda" element={<VerandaPage />} />
           <Route path="/contacts" element={<ContactsPage />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/consent" element={<Consent />} />

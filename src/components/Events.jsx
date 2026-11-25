@@ -2,7 +2,7 @@ import Reveal from './Reveal.jsx'
 import { Link } from 'react-router'
 import HallCard from './HallCard.jsx'
 import { ArrowRight } from './Icons.jsx'
-import { banquetTerms } from '../data/content.js'
+import { banquetTerms, cateringMinimum, contacts } from '../data/content.js'
 import { useHalls } from '../context/useHalls.js'
 import './Events.css'
 
@@ -34,6 +34,15 @@ export default function Events() {
             </Reveal>
           ))}
         </div>
+
+        <Reveal className="events__catering">
+          <div>
+            <span className="eyebrow">Кейтеринг</span>
+            <h3>Праздник на вашей площадке</h3>
+            <p>Ресторан организует выездное обслуживание мероприятий. Заказ — от {cateringMinimum.toLocaleString('ru-RU')} ₽.</p>
+          </div>
+          <a className="btn btn--outline" href={contacts.mobileHref}>Обсудить кейтеринг <ArrowRight /></a>
+        </Reveal>
 
         <Reveal as="ul" className="events__terms">
           {banquetTerms.map((t) => (

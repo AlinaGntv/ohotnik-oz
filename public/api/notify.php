@@ -130,10 +130,10 @@ $phone = phone_field($data);
 $comment = str_field($data, 'comment', 500, false);
 
 if ($type === 'booking') {
-    // kind: table — бронь стола (главная), banquet — заявка на банкет, stay — домик или номер.
+    // kind: table — бронь стола, banquet — банкет, stay — гостиница, house — дневной домик.
     // Для Make это всё type = booking (одна ветка «Бронь»), различается заголовком.
     $kind = $data['kind'] ?? 'table';
-    if (!in_array($kind, ['table', 'banquet', 'stay'], true)) {
+    if (!in_array($kind, ['table', 'banquet', 'stay', 'house'], true)) {
         fail(400, 'Неизвестный тип брони');
     }
 
@@ -157,21 +157,34 @@ if ($type === 'booking') {
             fail(422, 'Проверьте время');
         }
         $fields['time'] = $time;
+        $venue = str_field($data, 'venue', 40, false);
+        if ($venue !== '') {
+            if (!in_array($venue, ['Караоке', 'Лесная веранда'], true)) {
+                fail(422, 'Проверьте место бронирования');
+            }
+            $fields['venue'] = $venue;
+        }
         $dateLine .= ' в ' . e($time);
         $smsWhen .= " {$time}";
         $title = '🍽 <b>Бронь стола</b>';
         $smsTitle = 'Бронь';
-        $extra = [];
+        $extra = $venue !== '' ? ['📍 ' . e($venue)] : [];
     } elseif ($kind === 'banquet') {
         $fields['occasion'] = str_field($data, 'occasion', 60);
         $fields['hall'] = str_field($data, 'hall', 60, false);
         $title = '🎉 <b>Заявка на банкет</b>';
         $smsTitle = 'Банкет';
         $extra = ['🥂 Повод: ' . e($fields['occasion']), '🏛 Зал: ' . e($fields['hall'] ?: 'помочь с выбором')];
+    } elseif ($kind === 'house') {
+        $fields['option'] = str_field($data, 'option', 120);
+        $title = '🏡 <b>Бронь дневного домика</b>';
+        $smsTitle = 'Домик';
+        $extra = ['🌤 Дневной отдых: ' . e($fields['option'])];
+        $dateLine = '📅 Дата отдыха: ' . e($fields['date']);
     } else {
         $fields['option'] = str_field($data, 'option', 120);
-        $title = '🏡 <b>Бронь проживания</b>';
-        $smsTitle = 'Проживание';
+        $title = '🏨 <b>Бронь гостиничного номера</b>';
+        $smsTitle = 'Гостиница';
         $extra = ['🛏 ' . e($fields['option'])];
         $dateLine = '📅 Заезд: ' . e($fields['date']);
     }

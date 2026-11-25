@@ -57,11 +57,11 @@ export default function Booking() {
           <p className="lead booking__text">
             Укажите дату, время и количество гостей — мы перезвоним для подтверждения и позаботимся об остальном.
           </p>
-          <a href={contacts.phoneHref} className="booking__phone">
+          <a href={contacts.mobileHref} className="booking__phone">
             <Phone />
             <span>
               <small>Или позвоните нам</small>
-              {contacts.phone}
+              {contacts.mobile}
             </span>
           </a>
         </Reveal>

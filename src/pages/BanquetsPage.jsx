@@ -4,7 +4,7 @@ import HallCard from '../components/HallCard.jsx'
 import LeadForm from '../components/LeadForm.jsx'
 import Reveal from '../components/Reveal.jsx'
 import { ArrowRight } from '../components/Icons.jsx'
-import { banquetTerms, occasions, rooms } from '../data/content.js'
+import { banquetTerms, cateringMinimum, contacts, occasions, rooms } from '../data/content.js'
 import { useHalls } from '../context/useHalls.js'
 import '../components/Events.css'
 import './BanquetsPage.css'
@@ -78,9 +78,19 @@ export default function BanquetsPage() {
               Гостям банкета — <strong>скидка 20%</strong> на {rooms.count} гостиничных номеров, а на второй день
               свадьбы — <strong>−50%</strong> на мангальные домики.
             </p>
-            <Link to="/stay" className="btn btn--outline btn--sm">
-              Проживание <ArrowRight />
+            <Link to="/hotel" className="btn btn--outline btn--sm">
+              Гостиница <ArrowRight />
             </Link>
+            <Link to="/houses" className="btn btn--outline btn--sm">Домики для отдыха <ArrowRight /></Link>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="container">
+          <Reveal className="events__catering">
+            <div><span className="eyebrow">Кейтеринг</span><h3>Праздник на вашей площадке</h3><p>Выездное обслуживание ресторана — от {cateringMinimum.toLocaleString('ru-RU')} ₽.</p></div>
+            <a className="btn btn--outline" href={contacts.mobileHref}>Обсудить кейтеринг <ArrowRight /></a>
           </Reveal>
         </div>
       </section>

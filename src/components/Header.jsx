@@ -98,9 +98,9 @@ export default function Header() {
           </nav>
 
           <div className="header__actions">
-            <a href={contacts.phoneHref} className="header__phone" aria-label={`Позвонить: ${contacts.phone}`}>
+            <a href={contacts.mobileHref} className="header__phone" aria-label={`Позвонить: ${contacts.mobile}`}>
               <Phone />
-              <span>{contacts.phone}</span>
+              <span>{contacts.mobile}</span>
             </a>
             <Messengers className="header__messengers" />
             {ordersEnabled && <button
@@ -148,11 +148,11 @@ export default function Header() {
         </nav>
 
         <div className="mobile-menu__footer" style={{ '--i': navLinks.length }}>
-          <a href={contacts.phoneHref} className="mobile-menu__phone">
+          <a href={contacts.mobileHref} className="mobile-menu__phone">
             <Phone />
             <span>
               <small>Звоните, мы на связи</small>
-              {contacts.phone}
+              {contacts.mobile}
             </span>
           </a>
           <Messengers className="mobile-menu__messengers" />

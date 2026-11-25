@@ -1,0 +1,26 @@
+.venue-hours {
+  background: var(--c-cream);
+}
+
+.venue-hours__card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  padding: clamp(24px, 5vw, 56px);
+  border: 1px solid var(--c-line-light);
+  border-radius: var(--radius);
+  background: var(--c-card);
+  box-shadow: var(--shadow);
+}
+
+.venue-hours__card ul {
+  align-self: center;
+  display: grid;
+  gap: 10px;
+  color: var(--c-text-muted);
+  font-size: 15px;
+}
+
+@media (max-width: 700px) {
+  .venue-hours__card { grid-template-columns: 1fr; }
+}
