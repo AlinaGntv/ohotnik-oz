@@ -2,10 +2,12 @@ import Reveal from './Reveal.jsx'
 import { Link } from 'react-router'
 import HallCard from './HallCard.jsx'
 import { ArrowRight } from './Icons.jsx'
-import { banquetTerms, halls } from '../data/content.js'
+import { banquetTerms } from '../data/content.js'
+import { useHalls } from '../context/useHalls.js'
 import './Events.css'
 
 export default function Events() {
+  const { halls } = useHalls()
   return (
     <section className="events section" id="events">
       <div className="container">

@@ -4,7 +4,8 @@ import HallCard from '../components/HallCard.jsx'
 import LeadForm from '../components/LeadForm.jsx'
 import Reveal from '../components/Reveal.jsx'
 import { ArrowRight } from '../components/Icons.jsx'
-import { banquetTerms, halls, occasions, rooms } from '../data/content.js'
+import { banquetTerms, occasions, rooms } from '../data/content.js'
+import { useHalls } from '../context/useHalls.js'
 import '../components/Events.css'
 import './BanquetsPage.css'
 
@@ -16,13 +17,14 @@ const steps = [
 ]
 
 export default function BanquetsPage() {
+  const { halls } = useHalls()
   return (
     <>
       <PageHero
         eyebrow="Банкеты и события"
         title="Банкеты в лесопарке «Мельница»"
         lead="Три зала и банкетный шатёр — от камерного ужина на 25 гостей до свадьбы на 280 человек. Кухня на углях, выездная регистрация и парковка на 100 мест."
-        image={halls[0].image}
+        image={halls[0]?.image || halls[0]?.images?.[0]}
       >
         <a href="#banquet-form" className="btn btn--gold">
           Оставить заявку <ArrowRight />

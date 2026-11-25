@@ -8,7 +8,7 @@ import './Header.css'
 
 const Messengers = ({ className = '' }) => (
   <div className={`messengers ${className}`}>
-    <span className="msg" aria-label="Канал в MAX — ссылка скоро появится" title="Ссылка на канал появится позже"><Max /></span>
+    <a className="msg" aria-label="Канал в MAX" title="Канал в MAX" href="https://max.ru/join/L6GQ4B7pTrO67eVdiG6dFJrQ9MHsXAkH_7ON6jm5t3M" target="_blank" rel="noopener noreferrer"><Max /></a>
     <a href={yandexMapsUrl} className="msg" aria-label="Яндекс Карты" title="Яндекс Карты" target="_blank" rel="noopener noreferrer"><Pin /></a>
   </div>
 )

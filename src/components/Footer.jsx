@@ -18,7 +18,7 @@ export default function Footer() {
             <br />в лесопарке «Мельница»
           </p>
           <div className="footer__social">
-            <span aria-label="Канал в MAX — ссылка скоро появится" title="Ссылка на канал появится позже"><Max /></span>
+            <a href="https://max.ru/join/L6GQ4B7pTrO67eVdiG6dFJrQ9MHsXAkH_7ON6jm5t3M" aria-label="Канал в MAX" title="Канал в MAX" target="_blank" rel="noopener noreferrer"><Max /></a>
             <a href={yandexMapsUrl} aria-label="Яндекс Карты" title="Яндекс Карты" target="_blank" rel="noopener noreferrer"><Pin /></a>
           </div>
         </Reveal>

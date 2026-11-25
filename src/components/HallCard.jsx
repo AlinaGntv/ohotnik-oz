@@ -55,14 +55,21 @@ export default function HallCard({ hall }) {
       <div className="hall__body">
         <h3 className="hall__name">{hall.name}</h3>
         <ul className="hall__features">
-          {hall.features.map((f) => (
+          {hall.description && <p className="hall__description">{hall.description}</p>}
+          {(hall.features || []).map((f) => (
             <li key={f}>
               <Check />
               {f}
             </li>
           ))}
         </ul>
-        {(hall.rent || hall.extras.length > 0) && (
+        {hall.karaoke && (
+          <div className="hall__karaoke">
+            <strong>{hall.karaoke.tagline}</strong>
+            <ul>{(hall.karaoke.schedule || []).map((item) => <li key={item}>{item}</li>)}</ul>
+          </div>
+        )}
+        {(hall.rent || (hall.extras || []).length > 0) && (
           <dl className="hall__prices">
             {hall.rent && (
               <div>
@@ -70,7 +77,7 @@ export default function HallCard({ hall }) {
                 <dd>{hall.rent}</dd>
               </div>
             )}
-            {hall.extras.map((e) => (
+            {(hall.extras || []).map((e) => (
               <div key={e.label}>
                 <dt>{e.label}</dt>
                 <dd>{e.price}</dd>
@@ -78,9 +85,9 @@ export default function HallCard({ hall }) {
             ))}
           </dl>
         )}
-        <a href={hall.link} target="_blank" rel="noopener noreferrer" className="hall__link">
+        {hall.link && <a href={hall.link} target="_blank" rel="noopener noreferrer" className="hall__link">
           Подробнее о зале <ArrowRight />
-        </a>
+        </a>}
       </div>
     </article>
   )

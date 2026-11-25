@@ -4,12 +4,15 @@ import { BrowserRouter } from 'react-router'
 import './styles/global.css'
 import App from './App.jsx'
 import { MenuProvider } from './context/MenuContext.jsx'
+import { HallProvider } from './context/HallProvider.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <MenuProvider>
-        <App />
+        <HallProvider>
+          <App />
+        </HallProvider>
       </MenuProvider>
     </BrowserRouter>
   </StrictMode>,

@@ -167,6 +167,7 @@ const vk = (id) => `https://vk.ru/market-219080846_${id}`
 
 export const halls = [
   {
+    id: 'main',
     name: 'Основной зал',
     capacity: '250–280 гостей',
     features: ['Зона для выездной регистрации', 'Фуршетная зона — на выбор'],
@@ -175,6 +176,7 @@ export const halls = [
     image: '/images/hall-main-service.webp',
   },
   {
+    id: 'tent',
     name: 'Банкетный шатёр',
     capacity: '150–170 гостей',
     rent: '50 000 ₽',
@@ -192,6 +194,7 @@ export const halls = [
     videoPoster: '/images/banquet-tent-video-poster.webp',
   },
   {
+    id: 'white',
     name: 'Белый зал',
     capacity: '40–50 гостей',
     rent: '10 000 ₽',
@@ -201,10 +204,15 @@ export const halls = [
     images: ['/images/hall-white-overview.webp', '/images/hall-white-banquet.webp'],
   },
   {
+    id: 'fireplace',
     name: 'Каминный зал',
     capacity: '25–35 гостей',
     features: ['Уютная камерная атмосфера'],
     extras: [{ label: 'Караоке', price: '20 000 ₽' }],
+    karaoke: {
+      tagline: 'Любой банкет в караоке',
+      schedule: ['Четверг — не работает', 'Пятница — 20:00–04:00', 'Суббота — 18:00–04:00', 'Воскресенье — 20:00–02:00'],
+    },
     link: vk(9624428),
     image: '/images/hall-fireplace.webp',
   },

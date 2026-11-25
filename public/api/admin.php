@@ -108,12 +108,13 @@ if ($action === 'upload' && $method === 'POST') {
     $types = [IMAGETYPE_JPEG => 'jpg', IMAGETYPE_PNG => 'png', IMAGETYPE_WEBP => 'webp'];
     $kind = $imageInfo[2] ?? 0;
     if (!isset($types[$kind])) out(422, ['ok' => false, 'error' => 'Поддерживаются только JPG, PNG и WebP']);
-    $directory = dirname(__DIR__) . '/images/menu/uploads';
+    $kindName = ($_GET['type'] ?? '') === 'hall' ? 'hall' : 'dish';
+    $directory = dirname(__DIR__) . '/images/' . ($kindName === 'hall' ? 'halls' : 'menu') . '/uploads';
     if (!is_dir($directory) && !mkdir($directory, 0755, true) && !is_dir($directory)) out(500, ['ok' => false, 'error' => 'Не удалось создать каталог изображений']);
-    $filename = 'dish-' . bin2hex(random_bytes(10)) . '.' . $types[$kind];
+    $filename = $kindName . '-' . bin2hex(random_bytes(10)) . '.' . $types[$kind];
     if (!move_uploaded_file($file['tmp_name'], $directory . '/' . $filename)) out(500, ['ok' => false, 'error' => 'Не удалось сохранить изображение']);
     @chmod($directory . '/' . $filename, 0644);
-    out(200, ['ok' => true, 'image' => '/images/menu/uploads/' . $filename]);
+    out(200, ['ok' => true, 'image' => '/images/' . ($kindName === 'hall' ? 'halls' : 'menu') . '/uploads/' . $filename]);
 }
 
 if ($action === 'bootstrap' && $method === 'POST') {
@@ -145,6 +146,37 @@ if ($action === 'menu' && $method === 'PUT') {
         $seen[$id] = true;
     }
     write_store('menu', ['dishes' => array_values($dishes), 'categories' => array_values(array_unique($categories))]);
+    out(200, ['ok' => true]);
+}
+
+if ($action === 'bootstrap-halls' && $method === 'POST') {
+    $current = read_store('halls');
+    if (array_key_exists('halls', $current)) out(200, ['ok' => true, 'halls' => $current['halls']]);
+    $halls = body()['halls'] ?? null;
+    if (!is_array($halls)) out(422, ['ok' => false, 'error' => 'Не удалось загрузить исходный список залов']);
+    write_store('halls', ['halls' => array_values($halls)]);
+    out(200, ['ok' => true, 'halls' => array_values($halls)]);
+}
+
+if ($action === 'halls' && $method === 'GET') {
+    out(200, ['ok' => true, 'halls' => read_store('halls')['halls'] ?? null]);
+}
+
+if ($action === 'halls' && $method === 'PUT') {
+    $halls = body()['halls'] ?? null;
+    if (!is_array($halls)) out(422, ['ok' => false, 'error' => 'Проверьте список залов']);
+    $seen = [];
+    foreach ($halls as $hall) {
+        if (!is_array($hall) || !isset($hall['id'], $hall['name'], $hall['capacity'])) out(422, ['ok' => false, 'error' => 'В зале не заполнены название и вместимость']);
+        $id = (string) $hall['id'];
+        $images = $hall['images'] ?? (isset($hall['image']) ? [$hall['image']] : []);
+        if ($id === '' || isset($seen[$id])) out(422, ['ok' => false, 'error' => 'Идентификаторы залов должны быть уникальными']);
+        if (mb_strlen((string) $hall['name']) > 100 || mb_strlen((string) $hall['capacity']) > 80) out(422, ['ok' => false, 'error' => 'Проверьте название и вместимость зала']);
+        if (!is_array($images) || count($images) < 1) out(422, ['ok' => false, 'error' => 'Добавьте хотя бы одно фото зала']);
+        foreach (['features', 'extras', 'images'] as $field) if (isset($hall[$field]) && !is_array($hall[$field])) out(422, ['ok' => false, 'error' => 'Проверьте список характеристик, доплат и фото']);
+        $seen[$id] = true;
+    }
+    write_store('halls', ['halls' => array_values($halls)]);
     out(200, ['ok' => true]);
 }
 

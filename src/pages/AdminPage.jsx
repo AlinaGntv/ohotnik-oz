@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { dishes as originalDishes, menuCategories as originalCategories } from '../data/content.js'
+import { dishes as originalDishes, halls as originalHalls, menuCategories as originalCategories } from '../data/content.js'
+import { useHalls } from '../context/useHalls.js'
 import './AdminPage.css'
 
 const PAGE_SIZE = 12
@@ -90,7 +91,69 @@ function DishEditor({ dish, categories, csrf, onClose, onSave }) {
   </div>
 }
 
+function HallEditor({ hall, csrf, onClose, onSave }) {
+  const [form, setForm] = useState(() => ({
+    id: hall?.id || '', name: hall?.name || '', capacity: hall?.capacity || '', description: hall?.description || '',
+    rent: hall?.rent || '', link: hall?.link || '', features: (hall?.features || []).join('\n'),
+    extras: (hall?.extras || []).map((item) => `${item.label} | ${item.price}`).join('\n'),
+    images: (hall?.images || [hall?.image].filter(Boolean)).join('\n'), video: hall?.video || '', videoPoster: hall?.videoPoster || '',
+    karaokeTagline: hall?.karaoke?.tagline || '', karaokeSchedule: (hall?.karaoke?.schedule || []).join('\n'),
+  }))
+  const [error, setError] = useState('')
+  const [uploading, setUploading] = useState(false)
+  const set = (key) => (event) => setForm((previous) => ({ ...previous, [key]: event.target.value }))
+  const uploadImages = async (files) => {
+    if (!files.length) return
+    setError(''); setUploading(true)
+    try {
+      const paths = []
+      for (const file of files) {
+        const data = new FormData(); data.append('image', file)
+        paths.push((await request('upload&type=hall', { method: 'POST', data, csrf })).image)
+      }
+      setForm((previous) => ({ ...previous, images: [previous.images, ...paths].filter(Boolean).join('\n') }))
+    } catch (err) { setError(err.message) } finally { setUploading(false) }
+  }
+  const submit = async (event) => {
+    event.preventDefault(); setError('')
+    const images = form.images.split('\n').map((item) => item.trim()).filter(Boolean)
+    if (!form.name.trim() || !form.capacity.trim() || !images.length) { setError('Заполните название, вместимость и добавьте хотя бы одно фото'); return }
+    const extras = form.extras.split('\n').map((row) => row.split('|').map((part) => part.trim())).filter(([label]) => label).map(([label, price = '']) => ({ label, price }))
+    const karaokeSchedule = form.karaokeSchedule.split('\n').map((item) => item.trim()).filter(Boolean)
+    const saved = {
+      ...(hall || {}), id: form.id || `hall-${Date.now()}`, name: form.name.trim(), capacity: form.capacity.trim(),
+      description: form.description.trim(), rent: form.rent.trim(), link: form.link.trim(), features: form.features.split('\n').map((item) => item.trim()).filter(Boolean),
+      extras, images, image: images[0], video: form.video.trim(), videoPoster: form.videoPoster.trim(),
+      karaoke: form.karaokeTagline.trim() || karaokeSchedule.length ? { tagline: form.karaokeTagline.trim(), schedule: karaokeSchedule } : null,
+    }
+    try { await onSave(saved) } catch (err) { setError(err.message) }
+  }
+  return <div className="admin__modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+    <form className="admin__modal" onSubmit={submit}>
+      <div className="admin__modal-head"><div><span className="admin__eyebrow">Банкетные пространства</span><h2>{hall?.id ? 'Редактировать зал' : 'Новый зал'}</h2></div><button type="button" aria-label="Закрыть" onClick={onClose}>×</button></div>
+      <div className="admin__form-grid">
+        <label>Название<input value={form.name} onChange={set('name')} required maxLength={100} /></label>
+        <label>Вместимость<input value={form.capacity} onChange={set('capacity')} required maxLength={80} placeholder="Например, 40–50 гостей" /></label>
+        <label className="admin__field-wide">Описание<textarea rows="3" value={form.description} onChange={set('description')} maxLength={500} /></label>
+        <label className="admin__field-wide">Особенности зала, каждая с новой строки<textarea rows="3" value={form.features} onChange={set('features')} /></label>
+        <label>Аренда<input value={form.rent} onChange={set('rent')} placeholder="Например, 10 000 ₽" /></label>
+        <label>Ссылка «Подробнее»<input value={form.link} onChange={set('link')} placeholder="https://…" /></label>
+        <label className="admin__field-wide">Дополнительные услуги: название | цена, каждая с новой строки<textarea rows="3" value={form.extras} onChange={set('extras')} placeholder={'Аренда экрана | 5 000 ₽\nКараоке | 20 000 ₽'} /></label>
+        <label className="admin__field-wide">Пути к фото, по одному на строку<textarea rows="3" value={form.images} onChange={set('images')} placeholder="/images/halls/photo.webp" /></label>
+        <label className="admin__field-wide">Загрузить фото (JPG, PNG или WebP, до 8 МБ каждое)<input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={(event) => uploadImages(Array.from(event.target.files || []))} disabled={uploading} />{uploading && <span>Загружаем фото…</span>}</label>
+        <label>Путь к видео<input value={form.video} onChange={set('video')} placeholder="/videos/hall.mp4" /></label>
+        <label>Постер видео<input value={form.videoPoster} onChange={set('videoPoster')} placeholder="/images/halls/poster.webp" /></label>
+        <label>Подпись для караоке<input value={form.karaokeTagline} onChange={set('karaokeTagline')} placeholder="Любой банкет в караоке" /></label>
+        <label className="admin__field-wide">Расписание караоке, каждая строка отдельно<textarea rows="4" value={form.karaokeSchedule} onChange={set('karaokeSchedule')} placeholder={'Четверг — не работает\nПятница — 20:00–04:00'} /></label>
+      </div>
+      {error && <div className="admin__error" role="alert">{error}</div>}
+      <div className="admin__modal-actions"><button type="button" className="admin__secondary" onClick={onClose}>Отмена</button><button className="admin__primary" disabled={uploading}>Сохранить зал</button></div>
+    </form>
+  </div>
+}
+
 export default function AdminPage() {
+  const { setHalls: setPublicHalls } = useHalls()
   const [authenticated, setAuthenticated] = useState(false)
   const [csrf, setCsrf] = useState('')
   const [loginError, setLoginError] = useState('')
@@ -98,6 +161,7 @@ export default function AdminPage() {
   const [section, setSection] = useState('dishes')
   const [dishes, setDishes] = useState(originalDishes)
   const [categories, setCategories] = useState(originalCategories)
+  const [halls, setHalls] = useState(originalHalls)
   const [records, setRecords] = useState([])
   const [stats, setStats] = useState(null)
   const [recordType, setRecordType] = useState('all')
@@ -106,7 +170,9 @@ export default function AdminPage() {
   const [total, setTotal] = useState(0)
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('all')
+  const [hallQuery, setHallQuery] = useState('')
   const [editor, setEditor] = useState(null)
+  const [hallEditor, setHallEditor] = useState(null)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
 
@@ -136,6 +202,21 @@ export default function AdminPage() {
     }
   }, [csrf])
 
+  const saveHalls = useCallback(async (nextHalls) => {
+    await request('halls', { method: 'PUT', csrf, data: { halls: nextHalls } })
+    setHalls(nextHalls)
+    setPublicHalls(nextHalls)
+  }, [csrf, setPublicHalls])
+
+  const loadHalls = useCallback(async () => {
+    const result = await request('halls', { csrf })
+    if (Array.isArray(result.halls)) { setHalls(result.halls); setPublicHalls(result.halls) }
+    else {
+      const seeded = await request('bootstrap-halls', { method: 'POST', csrf, data: { halls: originalHalls } })
+      if (Array.isArray(seeded.halls)) { setHalls(seeded.halls); setPublicHalls(seeded.halls) }
+    }
+  }, [csrf, setPublicHalls])
+
   const loadStats = useCallback(async () => setStats((await request('stats', { csrf })).stats), [csrf])
   const loadRecords = useCallback(async () => {
     const result = await request(`records&type=${recordType}&page=${page}`, { csrf })
@@ -150,12 +231,15 @@ export default function AdminPage() {
   useEffect(() => {
     if (!authenticated || !csrf) return
     // oxlint-disable-next-line react(set-state-in-effect)
-    Promise.all([loadMenu(), loadStats(), loadRecords()]).catch((err) => setError(err.message))
-  }, [authenticated, csrf, section, loadMenu, loadStats, loadRecords])
+    Promise.all([loadMenu(), loadHalls(), loadStats(), loadRecords()]).catch((err) => setError(err.message))
+  }, [authenticated, csrf, section, loadMenu, loadHalls, loadStats, loadRecords])
 
   const visibleDishes = useMemo(() => dishes.filter((dish) => (category === 'all' || dish.category === category) && `${dish.name} ${dish.description || ''}`.toLowerCase().includes(query.toLowerCase())), [dishes, category, query])
   const dishPages = Math.max(1, Math.ceil(visibleDishes.length / PAGE_SIZE))
   const pageDishes = visibleDishes.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+  const visibleHalls = useMemo(() => halls.filter((hall) => `${hall.name} ${hall.capacity} ${hall.description || ''}`.toLowerCase().includes(hallQuery.toLowerCase())), [halls, hallQuery])
+  const hallPages = Math.max(1, Math.ceil(visibleHalls.length / PAGE_SIZE))
+  const pageHalls = visibleHalls.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
   const login = async (password) => {
     setBusy(true); setLoginError('')
@@ -178,6 +262,16 @@ export default function AdminPage() {
     try { await saveMenu(dishes.filter((item) => item.id !== dish.id), categories); setNotice('Блюдо удалено'); if (pageDishes.length === 1 && page > 1) setPage(page - 1) } catch (err) { setError(err.message) }
   }
 
+  const saveHall = async (hall) => {
+    const next = halls.some((item) => item.id === hall.id) ? halls.map((item) => item.id === hall.id ? hall : item) : [...halls, hall]
+    await saveHalls(next)
+    setHallEditor(null); setNotice('Информация о залах сохранена')
+  }
+  const deleteHall = async (hall) => {
+    if (!window.confirm(`Удалить зал «${hall.name}»? Это действие нельзя отменить.`)) return
+    try { await saveHalls(halls.filter((item) => item.id !== hall.id)); setNotice('Зал удалён'); if (pageHalls.length === 1 && page > 1) setPage(page - 1) } catch (err) { setError(err.message) }
+  }
+
   const updateRecord = async (record, status) => {
     try { await request('record', { method: 'PATCH', csrf, data: { id: record.id, status } }); await Promise.all([loadRecords(), loadStats()]) } catch (err) { setError(err.message) }
   }
@@ -195,7 +289,7 @@ export default function AdminPage() {
       {stats && <section className="admin__stats" aria-label="Статистика">
         {[["Заказы", stats.orders], ["Заявки", stats.leads], ["Новые обращения", stats.pending], ["Сегодня", stats.today], ["За неделю", stats.week], ["Сумма заказов", money(stats.revenue)]].map(([label, value]) => <article className="admin__stat" key={label}><span>{label}</span><strong>{value}</strong></article>)}
       </section>}
-      <nav className="admin__tabs"><button className={section === 'dishes' ? 'is-active' : ''} onClick={() => { setSection('dishes'); setPage(1) }}>Блюда <span>{dishes.length}</span></button><button className={section === 'records' && recordType === 'orders' ? 'is-active' : ''} onClick={() => { setSection('records'); setRecordType('orders'); setPage(1) }}>Заказы</button><button className={section === 'records' && recordType === 'leads' ? 'is-active' : ''} onClick={() => { setSection('records'); setRecordType('leads'); setPage(1) }}>Заявки</button><button className={section === 'records' && recordType === 'all' ? 'is-active' : ''} onClick={() => { setSection('records'); setRecordType('all'); setPage(1) }}>Все обращения</button></nav>
+      <nav className="admin__tabs"><button className={section === 'dishes' ? 'is-active' : ''} onClick={() => { setSection('dishes'); setPage(1) }}>Блюда <span>{dishes.length}</span></button><button className={section === 'halls' ? 'is-active' : ''} onClick={() => { setSection('halls'); setPage(1) }}>Залы <span>{halls.length}</span></button><button className={section === 'records' && recordType === 'orders' ? 'is-active' : ''} onClick={() => { setSection('records'); setRecordType('orders'); setPage(1) }}>Заказы</button><button className={section === 'records' && recordType === 'leads' ? 'is-active' : ''} onClick={() => { setSection('records'); setRecordType('leads'); setPage(1) }}>Заявки</button><button className={section === 'records' && recordType === 'all' ? 'is-active' : ''} onClick={() => { setSection('records'); setRecordType('all'); setPage(1) }}>Все обращения</button></nav>
       {error && <div className="admin__error" role="alert">{error}<button onClick={() => setError('')}>×</button></div>}{notice && <div className="admin__notice">{notice}<button onClick={() => setNotice('')}>×</button></div>}
       {section === 'dishes' ? <section className="admin__section">
         <div className="admin__toolbar"><div><h2>Меню</h2><span>{visibleDishes.length} позиций</span></div><button className="admin__primary" onClick={() => setEditor({})}>＋ Добавить блюдо</button>
@@ -204,6 +298,10 @@ export default function AdminPage() {
         </div>
         <div className="admin__table-wrap"><table className="admin__table"><thead><tr><th>Блюдо</th><th>Категория</th><th>Вес</th><th>Цена</th><th>Действия</th></tr></thead><tbody>{pageDishes.map((dish) => <tr key={dish.id}><td><div className="admin__dish"><img src={dish.image} alt="" /><div><strong>{dish.name}</strong><span>{dish.description || 'Описание не добавлено'}</span></div></div></td><td>{dish.category}</td><td>{dish.weight || '—'}</td><td className="admin__price">{money(dish.price)}</td><td><div className="admin__actions"><button onClick={() => setEditor(dish)}>Изменить</button><button className="is-danger" onClick={() => deleteDish(dish)}>Удалить</button></div></td></tr>)}</tbody></table>{!pageDishes.length && <p className="admin__empty">Блюда не найдены.</p>}</div>
         <Pagination page={page} pages={dishPages} onChange={setPage} />
+      </section> : section === 'halls' ? <section className="admin__section">
+        <div className="admin__toolbar"><div><h2>Залы</h2><span>{visibleHalls.length} площадок</span></div><button className="admin__primary" onClick={() => setHallEditor({})}>＋ Добавить зал</button><input className="admin__search" type="search" placeholder="Поиск зала" value={hallQuery} onChange={(event) => { setHallQuery(event.target.value); setPage(1) }} /></div>
+        <div className="admin__table-wrap"><table className="admin__table"><thead><tr><th>Зал</th><th>Вместимость</th><th>Фото</th><th>Доп. услуги</th><th>Действия</th></tr></thead><tbody>{pageHalls.map((hall) => <tr key={hall.id}><td><div className="admin__dish"><img src={(hall.images || [hall.image])[0]} alt="" /><div><strong>{hall.name}</strong><span>{hall.description || hall.features?.join(' · ') || 'Описание не добавлено'}</span></div></div></td><td>{hall.capacity}</td><td>{(hall.images || [hall.image].filter(Boolean)).length}</td><td>{(hall.extras || []).map((item) => `${item.label}: ${item.price}`).join(' · ') || '—'}</td><td><div className="admin__actions"><button onClick={() => setHallEditor(hall)}>Изменить</button><button className="is-danger" onClick={() => deleteHall(hall)}>Удалить</button></div></td></tr>)}</tbody></table>{!pageHalls.length && <p className="admin__empty">Залы не найдены.</p>}</div>
+        <Pagination page={page} pages={hallPages} onChange={setPage} />
       </section> : <section className="admin__section">
         <div className="admin__toolbar"><div><h2>{recordType === 'orders' ? 'Заказы' : recordType === 'leads' ? 'Заявки' : 'Все обращения'}</h2><span>{total} записей</span></div><div className="admin__record-paging">По 20 записей на странице</div></div>
         <div className="admin__records">{records.map((record) => <article className="admin__record" key={record.id}>
@@ -219,5 +317,6 @@ export default function AdminPage() {
       </section>}
     </div>
     {editor && <DishEditor dish={editor.id ? editor : null} categories={categories} csrf={csrf} onClose={() => setEditor(null)} onSave={handleDishSave} />}
+    {hallEditor && <HallEditor hall={hallEditor.id ? hallEditor : null} csrf={csrf} onClose={() => setHallEditor(null)} onSave={saveHall} />}
   </div>
 }

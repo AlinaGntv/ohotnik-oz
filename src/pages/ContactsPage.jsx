@@ -81,7 +81,7 @@ export default function ContactsPage() {
               <div className="contact-card__social">
                 <a href="#" aria-label="ВКонтакте"><Vk /></a>
                 <a href="#" aria-label="Telegram"><Telegram /></a>
-                <span aria-label="Канал в MAX — ссылка скоро появится" title="Ссылка на канал появится позже"><Max /></span>
+                <a href="https://max.ru/join/L6GQ4B7pTrO67eVdiG6dFJrQ9MHsXAkH_7ON6jm5t3M" aria-label="Канал в MAX" title="Канал в MAX" target="_blank" rel="noopener noreferrer"><Max /></a>
               </div>
             </Reveal>
           </div>
