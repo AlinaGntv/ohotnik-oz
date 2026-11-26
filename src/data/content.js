@@ -261,7 +261,14 @@ export const houses = [
     images: ['/images/house-12k-exterior.webp', '/images/house-12k-interior.webp'],
     imageAlts: ['Фасад деревянного домика среди леса', 'Интерьер домика с банкетным столом'],
   },
-  { name: 'Домики № 6–8', guests: 'до 60 человек', price: '18 000 ₽', image: u('1510798831971-661eb04b3739', 900) },
+  {
+    name: 'Домики № 6–8',
+    guests: 'до 60 человек',
+    price: '18 000 ₽',
+    image: '/images/house-18k-detail.webp',
+    images: ['/images/house-18k-detail.webp', '/images/house-18k-front.webp'],
+    imageAlts: ['Домик за 18 000 рублей, вид сбоку', 'Домик за 18 000 рублей, вид спереди'],
+  },
 ]
 
 export const housesInfo = {
