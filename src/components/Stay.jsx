@@ -1,8 +1,25 @@
+import { useState } from 'react'
 import { Link } from 'react-router'
 import Reveal from './Reveal.jsx'
-import { ArrowRight, Check, Clock, Users } from './Icons.jsx'
+import { ArrowLeft, ArrowRight, Check, Clock, Users } from './Icons.jsx'
 import { houses, housesInfo, rooms } from '../data/content.js'
 import './Stay.css'
+
+function HouseGallery({ house }) {
+  const images = house.images?.length ? house.images : [house.image]
+  const [active, setActive] = useState(0)
+  const show = (direction) => setActive((index) => (index + direction + images.length) % images.length)
+
+  return <div className="house__img">
+    <img className="img-cover" src={images[active]} alt={house.imageAlts?.[active] || house.name} loading="lazy" />
+    <span className="house__guests"><Users />{house.guests}</span>
+    {images.length > 1 && <div className="house__photo-controls" aria-label={`Фотографии: ${house.name}`}>
+      <button type="button" aria-label="Предыдущее фото" onClick={() => show(-1)}><ArrowLeft /></button>
+      <span>{active + 1} / {images.length}</span>
+      <button type="button" aria-label="Следующее фото" onClick={() => show(1)}><ArrowRight /></button>
+    </div>}
+  </div>
+}
 
 function HousesBlock() {
   return <div id="houses" className="stay__part">
@@ -18,10 +35,7 @@ function HousesBlock() {
       {houses.map((h, i) => (
         <Reveal key={h.name} delay={i * 100}>
           <article className="house">
-            <div className="house__img">
-              <img className="img-cover" src={h.image} alt={h.name} loading="lazy" />
-              <span className="house__guests"><Users />{h.guests}</span>
-            </div>
+            <HouseGallery house={h} />
             <div className="house__body">
               <h3 className="house__name">{h.name}</h3>
               <p className="house__hours"><Clock />{housesInfo.hours}</p>
