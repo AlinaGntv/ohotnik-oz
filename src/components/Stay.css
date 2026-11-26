@@ -37,12 +37,55 @@
   overflow: hidden;
 }
 
-.house__img img {
+.house__img > .img-cover {
   transition: transform 1.4s var(--ease);
 }
 
-.house:hover .house__img img {
+.house:hover .house__img > .img-cover {
   transform: scale(1.06);
+}
+
+.house__gallery {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  background: rgba(14, 20, 17, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.house__gallery-thumb {
+  width: 48px;
+  height: 36px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0.68;
+  transition: opacity 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.house__gallery-thumb:hover,
+.house__gallery-thumb.is-active {
+  border-color: var(--c-gold-light);
+  opacity: 1;
+}
+
+.house__gallery-thumb:hover {
+  transform: translateY(-2px);
+}
+
+.house__gallery-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .house__guests {
