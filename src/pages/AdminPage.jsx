@@ -144,7 +144,7 @@ function HallEditor({ hall, csrf, onClose, onSave }) {
         <label>Путь к видео<input value={form.video} onChange={set('video')} placeholder="/videos/hall.mp4" /></label>
         <label>Постер видео<input value={form.videoPoster} onChange={set('videoPoster')} placeholder="/images/halls/poster.webp" /></label>
         <label>Подпись для караоке<input value={form.karaokeTagline} onChange={set('karaokeTagline')} placeholder="Любой банкет в караоке" /></label>
-        <label className="admin__field-wide">Расписание караоке, каждая строка отдельно<textarea rows="4" value={form.karaokeSchedule} onChange={set('karaokeSchedule')} placeholder={'Четверг — 20:00–02:00\nПятница — 20:00–04:00'} /></label>
+        <label className="admin__field-wide">Расписание караоке, каждая строка отдельно<textarea rows="4" value={form.karaokeSchedule} onChange={set('karaokeSchedule')} placeholder={'Пятница — 20:00–04:00\nСуббота — 18:00–04:00\nВоскресенье — 20:00–02:00'} /></label>
         <label className="admin__field-wide">Условия депозита<input value={form.karaokeDeposit} onChange={set('karaokeDeposit')} placeholder="Без закрытия зала: 1 500 ₽ с человека. По субботам — 2 500 ₽ с человека." /></label>
       </div>
       {error && <div className="admin__error" role="alert">{error}</div>}
