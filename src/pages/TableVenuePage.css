@@ -21,6 +21,15 @@
   font-size: 15px;
 }
 
+.venue-hours__deposit {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--c-line-light);
+  color: var(--c-text-muted);
+  font-weight: 600;
+}
+
 @media (max-width: 700px) {
   .venue-hours__card { grid-template-columns: 1fr; }
 }

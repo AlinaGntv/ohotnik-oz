@@ -97,7 +97,7 @@ function HallEditor({ hall, csrf, onClose, onSave }) {
     rent: hall?.rent || '', link: hall?.link || '', features: (hall?.features || []).join('\n'),
     extras: (hall?.extras || []).map((item) => `${item.label} | ${item.price}`).join('\n'),
     images: (hall?.images || [hall?.image].filter(Boolean)).join('\n'), video: hall?.video || '', videoPoster: hall?.videoPoster || '',
-    karaokeTagline: hall?.karaoke?.tagline || '', karaokeSchedule: (hall?.karaoke?.schedule || []).join('\n'),
+    karaokeTagline: hall?.karaoke?.tagline || '', karaokeSchedule: (hall?.karaoke?.schedule || []).join('\n'), karaokeDeposit: hall?.karaoke?.deposit || '',
   }))
   const [error, setError] = useState('')
   const [uploading, setUploading] = useState(false)
@@ -124,7 +124,7 @@ function HallEditor({ hall, csrf, onClose, onSave }) {
       ...(hall || {}), id: form.id || `hall-${Date.now()}`, name: form.name.trim(), capacity: form.capacity.trim(),
       description: form.description.trim(), rent: form.rent.trim(), link: form.link.trim(), features: form.features.split('\n').map((item) => item.trim()).filter(Boolean),
       extras, images, image: images[0], video: form.video.trim(), videoPoster: form.videoPoster.trim(),
-      karaoke: form.karaokeTagline.trim() || karaokeSchedule.length ? { tagline: form.karaokeTagline.trim(), schedule: karaokeSchedule } : null,
+      karaoke: form.karaokeTagline.trim() || karaokeSchedule.length || form.karaokeDeposit.trim() ? { tagline: form.karaokeTagline.trim(), schedule: karaokeSchedule, deposit: form.karaokeDeposit.trim() } : null,
     }
     try { await onSave(saved) } catch (err) { setError(err.message) }
   }
@@ -144,7 +144,8 @@ function HallEditor({ hall, csrf, onClose, onSave }) {
         <label>Путь к видео<input value={form.video} onChange={set('video')} placeholder="/videos/hall.mp4" /></label>
         <label>Постер видео<input value={form.videoPoster} onChange={set('videoPoster')} placeholder="/images/halls/poster.webp" /></label>
         <label>Подпись для караоке<input value={form.karaokeTagline} onChange={set('karaokeTagline')} placeholder="Любой банкет в караоке" /></label>
-        <label className="admin__field-wide">Расписание караоке, каждая строка отдельно<textarea rows="4" value={form.karaokeSchedule} onChange={set('karaokeSchedule')} placeholder={'Четверг — не работает\nПятница — 20:00–04:00'} /></label>
+        <label className="admin__field-wide">Расписание караоке, каждая строка отдельно<textarea rows="4" value={form.karaokeSchedule} onChange={set('karaokeSchedule')} placeholder={'Четверг — 20:00–02:00\nПятница — 20:00–04:00'} /></label>
+        <label className="admin__field-wide">Условия депозита<input value={form.karaokeDeposit} onChange={set('karaokeDeposit')} placeholder="Без закрытия зала: 1 500 ₽ с человека. По субботам — 2 500 ₽ с человека." /></label>
       </div>
       {error && <div className="admin__error" role="alert">{error}</div>}
       <div className="admin__modal-actions"><button type="button" className="admin__secondary" onClick={onClose}>Отмена</button><button className="admin__primary" disabled={uploading}>Сохранить зал</button></div>
