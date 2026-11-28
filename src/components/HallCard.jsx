@@ -63,13 +63,6 @@ export default function HallCard({ hall }) {
             </li>
           ))}
         </ul>
-        {hall.karaoke && (
-          <div className="hall__karaoke">
-            <strong>{hall.karaoke.tagline}</strong>
-            <ul>{(hall.karaoke.schedule || []).map((item) => <li key={item}>{item}</li>)}</ul>
-            {hall.karaoke.deposit && <p className="hall__karaoke-note">{hall.karaoke.deposit}</p>}
-          </div>
-        )}
         {(hall.rent || (hall.extras || []).length > 0) && (
           <dl className="hall__prices">
             {hall.rent && (

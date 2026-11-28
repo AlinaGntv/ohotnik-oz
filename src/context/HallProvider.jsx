@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { halls as initialHalls, karaokeInfo } from '../data/content.js'
+import { halls as initialHalls } from '../data/content.js'
 import { HallContext } from './HallContext.js'
 
 export function HallProvider({ children }) {
@@ -11,10 +11,11 @@ export function HallProvider({ children }) {
       .then((response) => (response.ok ? response.json() : null))
       .then((data) => {
         if (active && Array.isArray(data?.halls)) {
-          const oldSchedule = ['Четверг — не работает', 'Пятница — 20:00–04:00', 'Суббота — 18:00–04:00', 'Воскресенье — 20:00–02:00']
-          setHalls(data.halls.map((hall) => {
-            const isLegacyKaraoke = hall.id === 'fireplace' && hall.karaoke?.schedule?.some((item) => oldSchedule.includes(item))
-            return isLegacyKaraoke ? { ...hall, karaoke: { ...hall.karaoke, ...karaokeInfo } } : hall
+          setHalls(data.halls.map((item) => {
+            const hall = { ...item }
+            delete hall.karaoke
+            hall.extras = (hall.extras || []).filter((extra) => extra.label?.trim().toLowerCase() !== 'караоке')
+            return hall
           }))
         }
       })
